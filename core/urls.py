@@ -24,6 +24,7 @@ admin.site.index_title = 'File System Dashboard'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('accounts.urls')),
 ]
 
 if settings.DEBUG:
