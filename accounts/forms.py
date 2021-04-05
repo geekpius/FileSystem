@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from django import forms
-from accounts.models import User, Profile
+from accounts.models import User, UserImage
 
 class LoginForm(forms.ModelForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput())
@@ -20,18 +20,19 @@ class RegisterUserForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'account_type', 'zone', 'password', 'owner']
+        fields = ['email', 'name', 'gender', 'phone', 'account_type', 'zone', 'department', 'password', 'owner']
 
 
-class UserProfileForm(forms.ModelForm):
 
-    class Meta:
-        model = Profile
-        fields = ['phone', 'gender', 'department']
-
-
-class UserProfileImageForm(forms.ModelForm):
+class UserImageForm(forms.ModelForm):
 
     class Meta:
-        model = Profile
+        model = UserImage
         fields = ['image']
+
+
+class FileCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = File
+        # fields = ['image']

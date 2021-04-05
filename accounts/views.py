@@ -8,8 +8,9 @@ from django.views.generic import ListView
 from django.template import loader
 from django.contrib import messages
 
-from accounts.forms import LoginForm, RegisterUserForm, UserProfileForm, UserProfileImageForm
-from accounts.models import User, Profile
+from accounts.forms import LoginForm, RegisterUserForm, UserImageForm
+from accounts.models import User, UserImage
+import os
 
 class LoginView(View):
     form_class = LoginForm
@@ -75,8 +76,10 @@ class RegisterUserView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         zones = Zone.objects.all()
+        departments = Department.objects.all()
         context = {
-            "zone_list": zones
+            "zone_list": zones,
+            "department_list": departments
         }
         return render(request, self.template_name, context)   
 
@@ -89,7 +92,8 @@ class RegisterUserView(LoginRequiredMixin, View):
             return JsonResponse({'message': form.errors})
         return HttpResponse("Wrong request")
 
-class UserListView(LoginRequiredMixin, View):
+
+class UserListUpdateView(LoginRequiredMixin, View):
     login_url = "accounts:login"
     redirect_field_name = "redirect_to"
     template_name = 'users/dashboard/index.html'
@@ -109,8 +113,136 @@ class UserListView(LoginRequiredMixin, View):
             return HttpResponse(template.render(context, request))   
         return HttpResponse('Wrong request')
 
-    # def post(self, request, *args, **kwargs):
-    #     if request.is_ajax():
-    #         user_zones = User.objects.filter(zone=request.POST['zone'])
-    #         return JsonResponse({'message': 'success'})
-    #     return HttpResponse("Wrong request")   
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            user = User.objects.get(id=request.POST['user_id'])
+            data = { 
+                'email': user.email, 
+                'name':user.name, '
+                'gender':user.gender, 
+                'phone':user.phone, 
+                'zone':user.zone,
+                'department':user.department,
+                'account_type':user.account_type,
+                'owner':user.owner
+            }
+            form = self.form_class(request.POST, initial=data)
+            if form.is_valid():
+                email = form.cleaned_data['email']
+                name = form.cleaned_data['name']
+                gender = form.cleaned_data['gender']
+                zone = form.cleaned_data['zone']
+                department = form.cleaned_data['department']
+                account_type = form.cleaned_data['account_type']
+                owner = form.cleaned_data['owner']
+                if form.is_change():
+                    user.email = email
+                    user.name = name
+                    user.gender = gender
+                    user.zone = zone
+                    user.department = department
+                    user.account_type = account_type
+                    user.owner = owner
+                    user.save()
+                    return JsonResponse({'message': 'success'})
+                return JsonResponse({'message': 'Form fields did not changed'})
+            return JsonResponse({"message": form.errors})
+        return HttpResponse("Wrong request")   
+
+
+class UserImageUpdateView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/dashboard/index.html'
+    form_class = UserImageForm
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            user_image = UserImage.objects.get(user=request.user)
+            data = { 'image': user_image.image }
+            form = self.form_class(request.POST, request.FILES, initial=data)
+            if form.is_valid():
+                if user_image.image:
+                    if os.path.exists(user_image.image.path):
+                        os.remove(user_image.image.path)
+                        # user_image.image = request.FILES['image']
+                        user_image.image = form.cleaned_data['image']
+                        user_image.save()
+                        return JsonResponse({'message':'success', 'img':user_image.image.url})
+                    else:
+                        # user_image.image = request.FILES['image']
+                        user_image.image = form.cleaned_data['image']
+                        user_image.save()
+                        return JsonResponse({'message':'success', 'img':user_image.image.url})
+                else:
+                    # user_image.image = request.FILES['image']
+                    user_image.image = form.cleaned_data['image']
+                    user_image.save()
+                    return JsonResponse({'message':'success', 'img':user_image.image.url})
+
+            return JsonResponse({'message':form.errors})
+        return HttpResponse('Wrong request')
+
+
+
+                if form.is_change():
+                    user.email = email
+                    user.name = name
+                    user.gender = gender
+                    user.zone = zone
+                    user.department = department
+                    user.account_type = account_type
+                    user.owner = owner
+                    user.save()
+                    return JsonResponse({'message': 'success'})
+                return JsonResponse({'message': 'Form fields did not changed'})
+            return JsonResponse({"message": form.errors})
+        return HttpResponse("Wrong request")   
+
+
+class FileCreateView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/dashboard/index.html'
+    form_class = CreateFileForm
+
+    def get(self, request, *args, **kwargs):
+        zones = Zone.objects.all()
+        departments = Department.objects.all()
+        context = {
+            "zone_list": zones,
+            "department_list": departments
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()                
+                return JsonResponse({'message': 'success'})
+            return JsonResponse({'message': form.errors})
+        return HttpResponse("Wrong request")   
+
+
+class FileStatusView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+
+    def post(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            user_file = File.objects.get(id=id)
+            user_file.status = request.POST['status']
+            user_file.save()         
+            return JsonResponse({'message': 'success'})
+        return HttpResponse("Wrong request")   
+
+
+class ListDepartmentView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+
+    def get(self, request, zone, *args, **kwargs):
+        if request.is_ajax():
+            departments = Department.objects.filter(zone=zone).values('id', 'name')
+            return JsonResponse({'data':departments})
+        return HttpResponse("Wrong request")   
