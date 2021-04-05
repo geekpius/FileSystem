@@ -135,7 +135,7 @@ class UserListUpdateView(LoginRequiredMixin, View):
                 department = form.cleaned_data['department']
                 account_type = form.cleaned_data['account_type']
                 owner = form.cleaned_data['owner']
-                if form.is_change():
+                if form.has_change():
                     user.email = email
                     user.name = name
                     user.gender = gender
@@ -234,6 +234,62 @@ class FileStatusView(LoginRequiredMixin, View):
             user_file.status = request.POST['status']
             user_file.save()         
             return JsonResponse({'message': 'success'})
+        return HttpResponse("Wrong request")   
+
+
+class DepartmentListCreateView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/dashboard/index.html'
+    form_class = DepartmentCreateForm
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            template = loader.get_template(template_name)
+            departments = Department.objects.all()
+            context = {
+                "department_list": departments
+            }
+            return HttpResponse(template.render(context, request))   
+        return HttpResponse('Wrong request')
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({'message': 'success'})
+            return JsonResponse({"message": form.errors})
+        return HttpResponse("Wrong request")   
+
+
+class DepartmentUpdateDeleteView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/dashboard/index.html'
+    form_class = DepartmentCreateForm
+
+    def get(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            Department.objects.get(id=id).delete()
+            return JsonResponse({'message': 'success'})  
+        return HttpResponse('Wrong request')
+
+    def post(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            department = Department.objects.get(id=id)
+            data = {
+                'name': department.name
+            }
+            form = self.form_class(request.POST, initial=data)
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                if form.has_changed():
+                    department.name = name
+                    department.save()
+                    return JsonResponse({'message': 'success'})
+                return JsonResponse({"message": "Form field values did not changed"})
+            return JsonResponse({"message": form.errors})
         return HttpResponse("Wrong request")   
 
 
