@@ -8,7 +8,7 @@ from django.views.generic import ListView
 from django.template import loader
 from django.contrib import messages
 
-from accounts.forms import LoginForm
+from accounts.forms import LoginForm, RegisterUserForm, UserProfileForm, UserProfileImageForm
 from accounts.models import User, Profile
 
 class LoginView(View):
@@ -65,3 +65,52 @@ class DashboardView(LoginRequiredMixin, View):
         context = {}
 
         return render(request, self.template_name, context)     
+
+
+class RegisterUserView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/dashboard/index.html'
+    form_class = RegisterUserForm
+
+    def get(self, request, *args, **kwargs):
+        zones = Zone.objects.all()
+        context = {
+            "zone_list": zones
+        }
+        return render(request, self.template_name, context)   
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({'message': 'success'})
+            return JsonResponse({'message': form.errors})
+        return HttpResponse("Wrong request")
+
+class UserListView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/dashboard/index.html'
+    form_class = RegisterUserForm
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            template = loader.get_template(template_name)
+            if request.user.zone == 'head':
+                users = User.objects.all()
+            else:
+                users = User.objects.filter(zone=request.user.zone)
+
+            context = {
+                "user_list": users
+            }
+            return HttpResponse(template.render(context, request))   
+        return HttpResponse('Wrong request')
+
+    # def post(self, request, *args, **kwargs):
+    #     if request.is_ajax():
+    #         user_zones = User.objects.filter(zone=request.POST['zone'])
+    #         return JsonResponse({'message': 'success'})
+    #     return HttpResponse("Wrong request")   

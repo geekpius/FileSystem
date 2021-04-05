@@ -79,7 +79,7 @@ class User(AbstractBaseUser):
 class Profile (models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="profile", on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, null=True)
-    zone = models.CharField(max_length=100, null=True)
+    gender = models.CharField(max_length=10, null=True)
     department = models.CharField(max_length=80, null=True)
     image = models.ImageField(upload_to="users", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
