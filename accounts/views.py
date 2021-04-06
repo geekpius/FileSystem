@@ -224,19 +224,6 @@ class FileCreateView(LoginRequiredMixin, View):
         return HttpResponse("Wrong request")   
 
 
-class FileStatusView(LoginRequiredMixin, View):
-    login_url = "accounts:login"
-    redirect_field_name = "redirect_to"
-
-    def post(self, request, id, *args, **kwargs):
-        if request.is_ajax():
-            user_file = File.objects.get(id=id)
-            user_file.status = request.POST['status']
-            user_file.save()         
-            return JsonResponse({'message': 'success'})
-        return HttpResponse("Wrong request")   
-
-
 class DepartmentListCreateView(LoginRequiredMixin, View):
     login_url = "accounts:login"
     redirect_field_name = "redirect_to"
@@ -297,8 +284,76 @@ class ListDepartmentView(LoginRequiredMixin, View):
     login_url = "accounts:login"
     redirect_field_name = "redirect_to"
 
-    def get(self, request, zone, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            departments = Department.objects.filter(zone=zone).values('id', 'name')
+            departments = Department.objects.filter(zone=request.user.zone).values('id', 'name')
             return JsonResponse({'data':departments})
         return HttpResponse("Wrong request")   
+
+
+class AcceptRejectFileView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+
+    def post(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            user_file = File.objects.get(id=id)
+            user_file.status = request.POST['status']
+            user_file.save()         
+            return JsonResponse({'message': 'success'})
+        return HttpResponse("Wrong request")      
+
+
+class ArchiveFileView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    form_class = ArchiveForm
+
+    def post(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                status = form.cleaned_data['status']
+                user_file = File.objects.get(id=id)
+                user_file.status = status
+                user_file.save()         
+                Archive.objects.create()
+                return JsonResponse({'message': 'success'})
+            return JsonResponse({'message':form.errors})
+        return HttpResponse("Wrong request") 
+
+
+class ShareFileView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    form_class = ShareForm
+
+    def post(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                status = form.cleaned_data['status']
+                user_file = File.objects.get(id=id)
+                user_file.status = status
+                user_file.save()         
+                return JsonResponse({'message': 'success'})
+            return JsonResponse({'message':form.errors})
+        return HttpResponse("Wrong request")    
+
+
+class ForwardFileView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    form_class = ForwardForm
+
+    def post(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                status = form.cleaned_data['status']
+                user_file = File.objects.get(id=id)
+                user_file.status = status
+                user_file.save()         
+                return JsonResponse({'message': 'success'})
+            return JsonResponse({'message':form.errors})
+        return HttpResponse("Wrong request")
