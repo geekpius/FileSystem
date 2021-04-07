@@ -8,8 +8,9 @@ from django.views.generic import ListView
 from django.template import loader
 from django.contrib import messages
 
-from accounts.forms import LoginForm
-from accounts.models import User, Profile
+from accounts.forms import LoginForm, RegisterUserForm, UserImageForm
+from accounts.models import User, UserImage
+import os
 
 
 class LoginView(View):

@@ -42,8 +42,11 @@ class MyUserManager(BaseUserManager):
 class User(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=60)
-    account_type = models.CharField(max_length=20, default="admin")
-    zone = models.CharField(max_length=60)
+    gender = models.CharField(max_length=10, null=True)
+    phone = models.CharField(max_length=15, null=True)
+    zone = models.CharField(max_length=100, null=True)
+    department = models.CharField(max_length=80, null=True)
+    account_type = models.CharField(max_length=20, default='super')
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_active = models.BooleanField(default=True)
     owner = models.BigIntegerField(default=0)
@@ -55,7 +58,7 @@ class User(AbstractBaseUser):
     
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name','zone']
+    REQUIRED_FIELDS = ['name','account_type','zone',]
 
     objects = MyUserManager()
 
@@ -84,17 +87,15 @@ class User(AbstractBaseUser):
 
 
 
-class Profile (models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="profile", on_delete=models.CASCADE)
-    phone = models.CharField(max_length=15, null=True)
-    department = models.CharField(max_length=80, null=True)
+class UserImage (models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="user_image", on_delete=models.CASCADE)
     image = models.ImageField(upload_to="users", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     #Metadata
     class Meta :
-        db_table = "user_profiles"
+        db_table = "user_images"
 
     #Methods
     def __str__(self):
