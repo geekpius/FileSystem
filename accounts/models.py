@@ -92,6 +92,11 @@ class User(AbstractBaseUser):
     def get_random_password(self):
         return get_random_string(length=6)
 
+    @property
+    def get_status(self):
+        if self.is_active:
+            return 'Deactivate'
+        return 'Activate'
 
 
 class UserImage (models.Model):

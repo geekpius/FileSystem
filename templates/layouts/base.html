@@ -238,6 +238,7 @@
 					<ul class="nav nav-sidebar" data-nav-type="accordion">
                         {% url 'accounts:dashboard' as dashboard_url %}
                         {% url 'accounts:users' as user_url %}
+                        {% url 'accounts:users_view' as view_user_url %}
                         {% url 'zones:zone_create' as zone_url %}
 						<!-- Main -->
 						<li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
@@ -249,14 +250,15 @@
 								</span>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a href="{% url 'accounts:users'  %}" class="nav-link {% if request.path == user_url %}active{% endif %}">
-								<i class="icon-user-tie"></i>
-								<span>
-									Users
-								</span>
-							</a>
+						{% if request.user.account_type == 'super' or request.user.account_type == 'admin' %}
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link {% if request.path == user_url %}active{% endif %} {% if request.path == view_user_url %}active{% endif %}"><i class="icon-user-tie"></i> <span>Users</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Users">
+								<li class="nav-item"><a href="{% url 'accounts:users' %}" class="nav-link {% if request.path == user_url %}active{% endif %}">Add New</a></li>
+								<li class="nav-item"><a href="{% url 'accounts:users_view' %}" class="nav-link {% if request.path == view_user_url %}active{% endif %}">View Users</a></li>
+							</ul>
 						</li>
+						{% endif %}
 						{% if request.user.account_type == 'super' %}
 						<li class="nav-item">
 							<a href="{% url 'zones:zone_create'  %}" class="nav-link {% if request.path == zone_url %}active{% endif %}">

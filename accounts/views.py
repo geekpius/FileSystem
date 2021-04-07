@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.views.generic import ListView
 from django.template import loader
@@ -107,4 +107,36 @@ class UserCreateView(LoginRequiredMixin, View):
                     return JsonResponse({'message':'success'})
                 return JsonResponse({'message':form.errors})
 
+        return HttpResponse('Wrong request')
+
+
+class UserListView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/accounts/user_table.html'
+
+    def get(self, request, *args, **kwargs):
+        users = User.objects.filter(~Q(account_type='super'), account_type='admin')
+        context = {
+            'user_list': users
+        }
+
+        return render(request, self.template_name, context)   
+
+
+class UserDeactivateUpdateView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/accounts/user_table.html'
+
+    def get(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            user = get_object_or_404(User, pk=id)
+            if user.is_active:
+                user.is_active = False
+                user.save()
+            else:
+                user.is_active = True
+                user.save()
+            return JsonResponse({'message':'success'})
         return HttpResponse('Wrong request')
