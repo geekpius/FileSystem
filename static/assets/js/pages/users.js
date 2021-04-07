@@ -6,12 +6,12 @@ $(".btnAdd").on('click', function(){
 
 });
 
-$("#formZone").on("submit", function(e){
+$("#formUser").on("submit", function(e){
     e.stopPropagation();
     e.preventDefault();
     var $this = $(this);
     var valid = true;
-    $('#formZone input').each(function() {
+    $('#formUser input, #formUser select').each(function() {
         let $this = $(this);
         
         if(!$this.val()) {
@@ -21,10 +21,10 @@ $("#formZone").on("submit", function(e){
     });
 
     if(valid){
-        $("#formZone .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
+        $("#formUser .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
         let data = $this.serialize();
         $.ajax({
-            url: $("#formZone").attr("action"),
+            url: $("#formUser").attr("action"),
             type: "POST",
             dateType: "json",
             data: data,
@@ -32,25 +32,32 @@ $("#formZone").on("submit", function(e){
                 if(resp.message==='success'){
                     swal({
                         title: "Success",
-                        text: `Zone is created successful`,
+                        text: `User is created successful`,
                         type: "success",
                         showCancelButton: false,
                         confirmButtonClass: "btn-sm text-primary",
                         confirmButtonText: "Okay",
                         },
                     function(){
-                        window.location.reload();
+                        $("#formUser")[0].reset();
+                        $("#formUser input[name='email']").focus();
                     });
                 }else{
-                    if(resp.message.name){
+                    if(resp.message.email){
+                        swal('Error', `${resp.message.email}`, 'warning');
+                    }else if(resp.message.name){
                         swal('Error', `${resp.message.name}`, 'warning');
+                    }else if(resp.message.phone){
+                        swal('Error', `${resp.message.phone}`, 'warning');
+                    }else if(resp.message.zone){
+                        swal('Error', `${resp.message.zone}`, 'warning');
                     }
                 }
-                $("#formZone .btnSubmit").html('Submit <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
+                $("#formUser .btnSubmit").html('Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i>').attr('disabled',false);
             },
             error: function(resp){
                 console.log('something wrong with request')
-                $("#formZone .btnSubmit").html('Submit <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
+                $("#formUser .btnSubmit").html('Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i>').attr('disabled',false);
             }
         });
     }
@@ -146,3 +153,26 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
     });
   return false;
 });
+
+
+$("#formUser input").on('input', function(){
+    if($(this).val()!=''){
+        $(this).parents('.validate').find('.mySpan').text('');
+    }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
+});
+
+$("#formUser select").on('change', function(){
+    if($(this).val()!=''){
+        $(this).parents('.validate').find('.mySpan').text('');
+    }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
+});
+
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
+  

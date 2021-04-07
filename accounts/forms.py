@@ -23,6 +23,12 @@ class RegisterUserForm(forms.ModelForm):
         fields = ['email', 'name', 'gender', 'phone', 'account_type', 'zone', 'department', 'password', 'owner']
 
 
+class RegisterAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['email', 'name', 'gender', 'phone', 'account_type', 'zone', 'password', 'owner']
+
 
 class UserImageForm(forms.ModelForm):
 

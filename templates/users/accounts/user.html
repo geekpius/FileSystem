@@ -21,16 +21,91 @@
 
     <!-- Main charts -->
     <div class="row">
-        <div class="col-xl-7">
+        <div class="col-sm-12 col-lg-6 offset-lg-3">
 
             <!-- Traffic sources -->
             <div class="card">
                 <div class="card-header header-elements-inline">
-                    <h6 class="card-title">Traffic sources</h6>
+                    <h6 class="card-title">Add New {% if request.user.account_type == 'super' %}Admin{% else %}User{% endif %}</h6>
                     <div class="header-elements"></div>
                 </div>
 
                 <div class="card-body py-0">
+                    <form action="{% url 'accounts:users' %}" id="formUser">
+                        {% csrf_token %}
+                        <div class="form-group validate">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" placeholder="Enter email">
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group validate">
+                            <label>Enter full name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Enter full name">
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group validate">
+                            <label class="d-block">Gender</label>
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" value="male" name="gender" checked>
+                                    Male
+                                </label>
+                            </div>
+
+                            <div class="form-check form-check-inline">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input" value="female" name="gender">
+                                    Female
+                                </label>
+                            </div>
+                            <br>
+                            <span class="text-danger mySpan"></span>
+                        </div>
+                        <div class="form-group validate">
+                            <label>Phone</label>
+                            <input type="tel" name="phone" maxlength="10" onkeypress="return isNumber(event);" class="form-control" placeholder="Enter phone number">
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        {% if request.user.account_type == 'super' %}
+                        <input type="hidden" readonly name="account_type" value="admin" >
+                        {% else %}
+                        <div class="form-group validate">
+                            <label>Account Type</label>
+                            <select name="account_type" class="form-control">
+                                <option value="">--Select--</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        {% endif %}
+                        <div class="form-group validate">
+                            <label>Zone</label>
+                            <select name="zone" class="form-control">
+                                <option value="">--Select--</option>
+                                {% for zone in zone_list %}
+                                <option value="{{ zone.name }}">{{ zone.name|title }}</option>
+                                {% endfor %}
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        {% if request.user.account_type == 'admin' %}
+                        <div class="form-group validate">
+                            <label>Department</label>
+                            <select name="department" class="form-control">
+                                <option value="">--Select--</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        {% endif %}
+
+                        <input type="hidden" readonly name="password" value="{{ request.user.get_random_password }}" >
+                        
+                        <input type="hidden" readonly name="owner" value="{% if request.user.account_type == 'super' %} 0 {% else %} {{ request.user.id }} {% endif %}" >
+                        <div class="form-group">
+                            <button type="submit" class="btn bg-primary btn-sm btnSubmit">Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i></button>
+                        </div> 
+                    </form>
                 </div>
 
             </div>
@@ -45,5 +120,5 @@
 {% endblock content %}
 
 {% block scripts %}
-<script src="{% static 'assets/js/demo_pages/dashboard.js' %}"></script>
+<script src="{% static 'assets/js/pages/users.js' %}"></script>
 {% endblock scripts %}

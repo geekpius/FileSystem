@@ -91,7 +91,7 @@ var DatatableBasic = function() {
     return {
         init: function() {
             _componentDatatableBasic();
-            _componentSelect2();
+            // _componentSelect2();
         }
     }
 }();

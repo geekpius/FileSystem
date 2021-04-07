@@ -48,7 +48,7 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="{% url 'zones:zone_activate' zone.id %}" class="text-danger btnDeactivate mr-2" data-status="{{ zone.get_status }}" title="{{ zone.get_status }} {{ zone.name|title }}"><i class="fa {% if zone.is_active %} fa-ban {% else %} fa-check-circle {% endif %}"></i></a>
+                            <a href="{% url 'zones:zone_activate' zone.id %}" class="{%if zone.is_active%}text-danger {%else%} text-success {%endif%} btnDeactivate mr-2" data-status="{{ zone.get_status }}" title="{{ zone.get_status }} {{ zone.name|title }}"><i class="fa {% if zone.is_active %} fa-ban {% else %} fa-check-circle {% endif %}"></i></a>
                             <a href="{% url 'zones:zone_delete' zone.id %}" class="text-danger btnDelete" title="Delete {{ zone.name|title }}"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>

@@ -8,8 +8,10 @@ from django.views.generic import ListView
 from django.template import loader
 from django.contrib import messages
 
-from accounts.forms import LoginForm, RegisterUserForm, UserImageForm
+from accounts.forms import LoginForm, RegisterUserForm, UserImageForm, RegisterAdminForm
 from accounts.models import User, UserImage
+from zones.models import Zone
+from django.db.models import Q
 import os
 
 
@@ -69,12 +71,40 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)  
 
 
-class UserView(LoginRequiredMixin, View):
+class UserCreateView(LoginRequiredMixin, View):
     login_url = "accounts:login"
     redirect_field_name = "redirect_to"
     template_name = 'users/accounts/user.html'
+    form_class = RegisterUserForm
+    form_class_admin = RegisterAdminForm
 
     def get(self, request, *args, **kwargs):
-        context = {}
+        zones = Zone.objects.filter(~Q(name='head'), is_active=True)
+        context = {
+            'zone_list': zones
+        }
 
         return render(request, self.template_name, context)    
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            if request.user.account_type == 'super':
+                admin_form = self.form_class_admin(request.POST)
+                if admin_form.is_valid():
+                    user = admin_form.save(commit=False)
+                    password = admin_form.cleaned_data['password']
+                    user.set_password(password)
+                    user.save()
+                    return JsonResponse({'message':'success'})
+                return JsonResponse({'message':admin_form.errors})
+            else:
+                form = self.form_class(request.POST)
+                if form.is_valid():
+                    user = form.save(commit=False)
+                    password = form.cleaned_data['password']
+                    user.set_password(password)
+                    user.save()
+                    return JsonResponse({'message':'success'})
+                return JsonResponse({'message':form.errors})
+
+        return HttpResponse('Wrong request')

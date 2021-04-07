@@ -46,6 +46,9 @@ class ZoneDeactivateView(LoginRequiredMixin, View):
             zone = Zone.objects.get(id=id)
             if zone.is_active:
                 zone.is_active = False
-            zone.is_active = True
+                zone.save()
+            else:
+                zone.is_active = True
+                zone.save()
             return JsonResponse({"message": "success"}) 
         return JsonResponse({"message": "Wrong request"}) 

@@ -1,10 +1,11 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.utils.crypto import get_random_string
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, name, zone, password=None):
+    def create_user(self, email, name, account_type, zone, password=None):
         if not email:
             raise ValueError('Users must have an email address')
         if not name:
@@ -15,6 +16,7 @@ class MyUserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             name=name,
+            account_type=account_type,
             zone=zone,
         )
 
@@ -24,10 +26,11 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, name, zone, password=None):
+    def create_superuser(self, email, name, account_type, zone, password=None):
         user = self.create_user(
             email=self.normalize_email(email),
             name=name,
+            account_type=account_type,
             password=password,
             zone=zone,
         )
@@ -43,9 +46,9 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=60)
     gender = models.CharField(max_length=10, null=True)
-    phone = models.CharField(max_length=15, null=True)
+    phone = models.CharField(max_length=15, unique=True)
     zone = models.CharField(max_length=100, null=True)
-    department = models.CharField(max_length=80, null=True)
+    department = models.CharField(max_length=100, null=True)
     account_type = models.CharField(max_length=20, default='super')
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -84,6 +87,10 @@ class User(AbstractBaseUser):
     @property
     def capitalize_zone(self):
         return capitalize(self.zone)
+
+    @property
+    def get_random_password(self):
+        return get_random_string(length=6)
 
 
 
