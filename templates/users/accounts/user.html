@@ -1,0 +1,49 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Users{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Home</span> - Users</h4>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+
+    <!-- Main charts -->
+    <div class="row">
+        <div class="col-xl-7">
+
+            <!-- Traffic sources -->
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h6 class="card-title">Traffic sources</h6>
+                    <div class="header-elements"></div>
+                </div>
+
+                <div class="card-body py-0">
+                </div>
+
+            </div>
+            <!-- /traffic sources -->
+
+        </div>
+    </div>
+    <!-- /main charts -->
+
+</div>
+<!-- /content area -->
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'assets/js/demo_pages/dashboard.js' %}"></script>
+{% endblock scripts %}

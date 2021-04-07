@@ -4,16 +4,18 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, email, name, account_type, password=None):
+    def create_user(self, email, name, zone, password=None):
         if not email:
             raise ValueError('Users must have an email address')
-        if not account_type:
+        if not name:
+            raise ValueError('Users must have name')
+        if not zone:
             raise ValueError('Users must have account type')
 
         user = self.model(
             email=self.normalize_email(email),
             name=name,
-            account_type=account_type,
+            zone=zone,
         )
 
         user.is_active = True
@@ -22,12 +24,12 @@ class MyUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, name, account_type, password=None):
+    def create_superuser(self, email, name, zone, password=None):
         user = self.create_user(
             email=self.normalize_email(email),
             name=name,
             password=password,
-            account_type=account_type,
+            zone=zone,
         )
         user.is_admin = True
         user.is_staff = True
@@ -40,7 +42,8 @@ class MyUserManager(BaseUserManager):
 class User(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=60)
-    account_type = models.CharField(max_length=20)
+    account_type = models.CharField(max_length=20, default="admin")
+    zone = models.CharField(max_length=60)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_active = models.BooleanField(default=True)
     owner = models.BigIntegerField(default=0)
@@ -52,12 +55,13 @@ class User(AbstractBaseUser):
     
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name','account_type']
+    REQUIRED_FIELDS = ['name','zone']
 
     objects = MyUserManager()
 
     class Meta:
         db_table = "account_users"
+        indexes = [models.Index(fields=['zone']), models.Index(fields=['owner'])]
 
     def __str__(self):
         return f"{self.email}"
@@ -73,13 +77,16 @@ class User(AbstractBaseUser):
     @property
     def capitalize_account_type(self):
         return capitalize(self.account_type)
+    
+    @property
+    def capitalize_zone(self):
+        return capitalize(self.zone)
 
 
 
 class Profile (models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="profile", on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, null=True)
-    zone = models.CharField(max_length=100, null=True)
     department = models.CharField(max_length=80, null=True)
     image = models.ImageField(upload_to="users", null=True)
     created_at = models.DateTimeField(auto_now_add=True)

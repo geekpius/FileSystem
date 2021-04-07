@@ -11,6 +11,7 @@ from django.contrib import messages
 from accounts.forms import LoginForm
 from accounts.models import User, Profile
 
+
 class LoginView(View):
     form_class = LoginForm
     template_name = "auth/login.html"
@@ -59,9 +60,20 @@ class ResetPasswordView(View):
 class DashboardView(LoginRequiredMixin, View):
     login_url = "accounts:login"
     redirect_field_name = "redirect_to"
-    template_name = 'users/dashboard/index.html'
+    template_name = 'users/accounts/index.html'
 
     def get(self, request, *args, **kwargs):
         context = {}
 
-        return render(request, self.template_name, context)     
+        return render(request, self.template_name, context)  
+
+
+class UserView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/accounts/user.html'
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+
+        return render(request, self.template_name, context)    

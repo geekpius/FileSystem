@@ -1,0 +1,101 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Zones{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Home</span> - Zones</h4>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+    
+    <!-- Basic datatable -->
+    <div class="card">
+        <div class="card-header header-elements-inline">
+            <button type="button" data-toggle="modal" data-target="#modal_add_form" class="btn btn-primary btn-sm btnAdd"><i class="fa fa-plus-circle"></i> Add New</button>
+        </div>
+
+        <div class="card-body table-responsive">
+            <table class="table datatable-basic">
+                <thead>
+                    <tr class="text-primary">
+                        <th>Created At</th>
+                        <th>Zone</th>
+                        <th>Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for zone in zone_list %}
+                    <tr class="record">
+                        <td>{{ zone.created_at }}</td>
+                        <td>{{ zone.name|title }}</td>
+                        <td>
+                            {% if zone.is_active %}
+                            <span class="badge badge-success">Active</span>
+                            {% else %}
+                            <span class="badge badge-danger">Not Active</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'zones:zone_activate' zone.id %}" class="text-danger btnDeactivate mr-2" data-status="{{ zone.get_status }}" title="{{ zone.get_status }} {{ zone.name|title }}"><i class="fa {% if zone.is_active %} fa-ban {% else %} fa-check-circle {% endif %}"></i></a>
+                            <a href="{% url 'zones:zone_delete' zone.id %}" class="text-danger btnDelete" title="Delete {{ zone.name|title }}"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /basic datatable -->
+
+    <!-- Vertical form modal -->
+    <div id="modal_add_form" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Zone</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <form action="{% url 'zones:zone_create' %}" id="formZone">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <div class="form-group validate">
+                                <label>Enter zone name</label>
+                                <input type="text" name="name" class="form-control" placeholder="Enter zone name">
+                                <span class="text-danger mySpan"></span>
+                            </div>                            
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link text-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-primary btn-sm btnSubmit">Submit <i class="icon-paperplane ml-2"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /vertical form modal -->
+
+</div>
+<!-- /content area -->
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/datatables_basic.js' %}"></script>
+<script src="{% static 'assets/js/pages/zones.js' %}"></script>
+{% endblock scripts %}

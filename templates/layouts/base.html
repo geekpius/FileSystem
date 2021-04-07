@@ -11,11 +11,13 @@
 	<!-- Global stylesheets -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
 	<link href="{% static 'assets/css/icons/icomoon/styles.min.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static 'assets/css/icons/fontawesome/styles.min.css' %}" rel="stylesheet" type="text/css">
 	<link href="{% static 'assets/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
 	<link href="{% static 'assets/bootstrap/css/bootstrap_limitless.min.css' %}" rel="stylesheet" type="text/css">
 	<link href="{% static 'assets/bootstrap/css/layout.min.css' %}" rel="stylesheet" type="text/css">
 	<link href="{% static 'assets/bootstrap/css/components.min.css' %}" rel="stylesheet" type="text/css">
 	<link href="{% static 'assets/bootstrap/css/colors.min.css' %}" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="{% static 'assets/sweetalert/sweetalert.css' %}">
 	<!-- /global stylesheets -->
 
     {% block styles %} {% endblock styles %}
@@ -222,7 +224,7 @@
 							<div class="media-body">
 								<div class="media-title font-weight-semibold">{{ request.user.name }}</div>
 								<div class="font-size-xs opacity-50">
-									<i class="icon-pin font-size-sm"></i> &nbsp;{{ request.user.profile.zone }}
+									<i class="icon-pin font-size-sm"></i> &nbsp;{{ request.user.zone|title }}
 								</div>
 							</div>
 						</div>
@@ -235,6 +237,8 @@
 				<div class="card card-sidebar-mobile">
 					<ul class="nav nav-sidebar" data-nav-type="accordion">
                         {% url 'accounts:dashboard' as dashboard_url %}
+                        {% url 'accounts:users' as user_url %}
+                        {% url 'zones:zone_create' as zone_url %}
 						<!-- Main -->
 						<li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
 						<li class="nav-item">
@@ -245,6 +249,24 @@
 								</span>
 							</a>
 						</li>
+						<li class="nav-item">
+							<a href="{% url 'accounts:users'  %}" class="nav-link {% if request.path == user_url %}active{% endif %}">
+								<i class="icon-user-tie"></i>
+								<span>
+									Users
+								</span>
+							</a>
+						</li>
+						{% if request.user.account_type == 'super' %}
+						<li class="nav-item">
+							<a href="{% url 'zones:zone_create'  %}" class="nav-link {% if request.path == zone_url %}active{% endif %}">
+								<i class="icon-location3"></i>
+								<span>
+									Zones
+								</span>
+							</a>
+						</li>
+						{% endif %}
 						<!-- /main -->
 					</ul>
 				</div>
@@ -303,6 +325,7 @@
 	<script src="{% static 'assets/js/plugins/pickers/daterangepicker.js' %}"></script>
 
 	<script src="{% static 'assets/bootstrap/js/app.js' %}"></script>
+	<script src="{% static 'assets/sweetalert/sweetalert.min.js' %}"></script>
 	<!-- /theme JS files -->
 
     {% block scripts %} {% endblock scripts %}
