@@ -1,6 +1,6 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}Zones{% endblock title %}
+{% block title %}Departments{% endblock title %}
 
 {% load static %}
 
@@ -9,7 +9,7 @@
 <div class="page-header page-header-light">
     <div class="page-header-content header-elements-md-inline">
         <div class="page-title d-flex">
-            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Home</span> - Zones</h4>
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Home</span> - Departments</h4>
         </div>
     </div>
 </div>
@@ -30,26 +30,26 @@
                 <thead>
                     <tr class="text-primary">
                         <th>Created At</th>
-                        <th>Zone</th>
+                        <th>Department</th>
                         <th>Status</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for zone in zone_list %}
+                    {% for department in department_list %}
                     <tr class="record">
-                        <td>{{ zone.created_at }}</td>
-                        <td>{{ zone.name|title }}</td>
+                        <td>{{ department.created_at }}</td>
+                        <td>{{ department.name|upper }}</td>
                         <td>
-                            {% if zone.is_active %}
+                            {% if department.is_active %}
                             <span class="badge badge-success">Active</span>
                             {% else %}
                             <span class="badge badge-danger">Not Active</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="{% url 'zones:zone_activate' zone.id %}" class="{%if zone.is_active%}text-danger {%else%} text-success {%endif%} btnDeactivate mr-2" data-status="{{ zone.get_status }}" title="{{ zone.get_status }} {{ zone.name|title }}"><i class="fa {% if zone.is_active %} fa-ban {% else %} fa-check-circle {% endif %}"></i></a>
-                            <a href="{% url 'zones:zone_delete' zone.id %}" class="text-danger btnDelete" title="Delete {{ zone.name|title }}"><i class="fa fa-trash"></i></a>
+                            <a href="{% url 'zones:zone_departments_deactivate_delete' department.id %}" data-token="{{ csrf_token }}" class="{%if department.is_active%}text-danger {%else%} text-success {%endif%} btnDeactivate mr-2" data-status="{{ department.get_status }}" title="{{ department.get_status }} {{ department.name|title }}"><i class="fa {% if department.is_active %} fa-ban {% else %} fa-check-circle {% endif %}"></i></a>
+                            <a href="{% url 'zones:zone_departments_deactivate_delete' department.id %}" class="text-danger btnDelete" title="Delete {{ department.name|title }}"><i class="fa fa-trash"></i></a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -64,18 +64,19 @@
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add New Zone</h5>
+                    <h5 class="modal-title">Add New Department</h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
-                <form action="{% url 'zones:zone_create' %}" id="formZone">
+                <form action="{% url 'zones:zone_departments' %}" id="formDepartment">
                     <div class="modal-body">
                         {% csrf_token %}
                         <div class="form-group validate">
-                            <label>Enter zone name</label>
-                            <input type="text" name="name" class="form-control" placeholder="eg:Accra, Kumasi">
+                            <label>Enter department name</label>
+                            <input type="text" name="name" class="form-control" placeholder="eg:IT, Accounts, Procurement">
                             <span class="text-danger mySpan"></span>
                         </div> 
+                        <input type="hidden" name="zone" readonly value="{{ request.user.zone }}">
                     </div>
 
                     <div class="modal-footer">
@@ -95,5 +96,5 @@
 {% block scripts %}
 <script src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
 <script src="{% static 'assets/js/pages/datatables_basic.js' %}"></script>
-<script src="{% static 'assets/js/pages/zones/zones.js' %}"></script>
+<script src="{% static 'assets/js/pages/zones/department.js' %}"></script>
 {% endblock scripts %}

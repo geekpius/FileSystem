@@ -1,17 +1,10 @@
 
-// $('.datatable-basic').DataTable();
-
-$(".btnAdd").on('click', function(){
-
-
-});
-
-$("#formZone").on("submit", function(e){
+$("#formDepartment").on("submit", function(e){
     e.stopPropagation();
     e.preventDefault();
     var $this = $(this);
     var valid = true;
-    $('#formZone input').each(function() {
+    $('#formDepartment input').each(function() {
         let $this = $(this);
         
         if(!$this.val()) {
@@ -21,10 +14,10 @@ $("#formZone").on("submit", function(e){
     });
 
     if(valid){
-        $("#formZone .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
+        $("#formDepartment .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
         let data = $this.serialize();
         $.ajax({
-            url: $("#formZone").attr("action"),
+            url: $("#formDepartment").attr("action"),
             type: "POST",
             dateType: "json",
             data: data,
@@ -32,7 +25,7 @@ $("#formZone").on("submit", function(e){
                 if(resp.message==='success'){
                     swal({
                         title: "Success",
-                        text: `Zone is created successful`,
+                        text: `Department is created successful`,
                         type: "success",
                         showCancelButton: false,
                         confirmButtonClass: "btn-sm text-primary",
@@ -44,13 +37,15 @@ $("#formZone").on("submit", function(e){
                 }else{
                     if(resp.message.name){
                         swal('Error', `${resp.message.name}`, 'warning');
+                    }else{
+                        swal('Error', `${resp.message}`, 'warning');
                     }
                 }
-                $("#formZone .btnSubmit").html('Submit <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
+                $("#formDepartment .btnSubmit").html('Submit <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
             },
             error: function(resp){
                 console.log('something wrong with request')
-                $("#formZone .btnSubmit").html('Submit <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
+                $("#formDepartment .btnSubmit").html('Submit <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
             }
         });
     }
@@ -64,7 +59,7 @@ $(".datatable-basic tbody tr").on('click', '.btnDelete', function(e){
     var $this = $(this);
     swal({
         title: "Sure to delete?",
-        text: `You are about delete ${$this.parents('.record').find('td').eq(1).text()} zone`,
+        text: `You are about delete ${$this.parents('.record').find('td').eq(1).text()} department`,
         type: "warning",
         showCancelButton: true,
         confirmButtonClass: "btn-sm text-danger",
@@ -102,7 +97,7 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
     let color = $this.data('status').toLowerCase() == 'activate'? 'text-success':'text-danger';
     swal({
         title: `Sure to ${$this.data('status').toLowerCase()}?`,
-        text: `You are about deactivate ${$this.parents('.record').find('td').eq(1).text()} zone`,
+        text: `You are about deactivate ${$this.parents('.record').find('td').eq(1).text()} department`,
         type: "warning",
         showCancelButton: true,
         confirmButtonClass: `btn-sm ${color}`,
@@ -113,8 +108,9 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
     function(){
         $.ajax({
             url: $this.attr('href'),
-            type: "GET",
+            type: "POST",
             dataType: "json",
+            data: {csrfmiddlewaretoken: $this.data('token')},
             success: function(resp){
                 // alert(resp.message)
                 if(resp.message === 'success'){

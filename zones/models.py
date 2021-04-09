@@ -15,7 +15,6 @@ class Zone (models.Model):
     def __str__(self):
         return self.name
 
-
     @property
     def get_status(self):
         if self.is_active:
@@ -37,3 +36,9 @@ class Department (models.Model):
     #Methods
     def __str__(self):
         return self.name
+
+    @property
+    def get_status(self):
+        if self.is_active:
+            return 'Deactivate'
+        return 'Activate'

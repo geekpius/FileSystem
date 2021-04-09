@@ -1,0 +1,422 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}View user details{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Home</span> - View User Details</h4>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+
+    <!-- Inner container -->
+    <div class="d-md-flex align-items-md-start">
+
+        <!-- Left sidebar component -->
+        <div class="sidebar sidebar-light bg-transparent sidebar-component sidebar-component-left wmin-300 border-0 shadow-0 sidebar-expand-md">
+
+            <!-- Sidebar content -->
+            <div class="sidebar-content">
+
+                <!-- Navigation -->
+                <div class="card">
+                    <div class="card-body bg-indigo-400 text-center card-img-top" style="background-image: url({% static 'assets/images/backgrounds/panel_bg.png' %}); background-size: contain;">
+                        <div class="card-img-actions d-inline-block mb-3">
+                            <img class="img-fluid rounded-circle" src="{% static request.user.user_image.get_user_image %}" width="170" height="170" alt="">
+                            <div class="card-img-actions-overlay rounded-circle">
+                                <a href="#" class="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
+                                    <i class="icon-plus3"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <h6 class="font-weight-semibold mb-0">{{ user.name|title }}</h6>
+                        <span class="d-block opacity-75">{{ user.account_type|title }}</span>
+
+                        <div class="list-icons list-icons-extended mt-3">
+                            <a href="#" class="list-icons-item text-white" data-popup="tooltip" title="" data-container="body" data-original-title="Google Drive"><i class="icon-google-drive"></i></a>
+                            <a href="#" class="list-icons-item text-white" data-popup="tooltip" title="" data-container="body" data-original-title="Twitter"><i class="icon-twitter"></i></a>
+                            <a href="#" class="list-icons-item text-white" data-popup="tooltip" title="" data-container="body" data-original-title="Github"><i class="icon-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- /navigation -->
+
+
+                <!-- Latest updates -->
+                <div class="card">
+                    <div class="card-header bg-transparent header-elements-inline">
+                        <span class="card-title font-weight-semibold">Latest updates</span>
+                        <div class="header-elements">
+                            <div class="list-icons">
+                                <a class="list-icons-item" data-action="collapse"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <ul class="media-list">
+                            <li class="media">
+                                <div class="mr-3">
+                                    <a href="#" class="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon">
+                                        <i class="icon-git-pull-request"></i>
+                                    </a>
+                                </div>
+
+                                <div class="media-body">
+                                    Drop the IE <a href="#">specific hacks</a> for temporal inputs
+                                    <div class="text-muted font-size-sm">4 minutes ago</div>
+                                </div>
+                            </li>
+
+                            <li class="media">
+                                <div class="mr-3">
+                                    <a href="#" class="btn bg-transparent border-warning text-warning rounded-round border-2 btn-icon">
+                                        <i class="icon-git-commit"></i>
+                                    </a>
+                                </div>
+                                
+                                <div class="media-body">
+                                    Add full font overrides for popovers and tooltips
+                                    <div class="text-muted font-size-sm">36 minutes ago</div>
+                                </div>
+                            </li>
+
+                            <li class="media">
+                                <div class="mr-3">
+                                    <a href="#" class="btn bg-transparent border-info text-info rounded-round border-2 btn-icon">
+                                        <i class="icon-git-branch"></i>
+                                    </a>
+                                </div>
+                                
+                                <div class="media-body">
+                                    <a href="#">Chris Arney</a> created a new <span class="font-weight-semibold">Design</span> branch
+                                    <div class="text-muted font-size-sm">2 hours ago</div>
+                                </div>
+                            </li>
+
+                            <li class="media">
+                                <div class="mr-3">
+                                    <a href="#" class="btn bg-transparent border-success text-success rounded-round border-2 btn-icon">
+                                        <i class="icon-git-merge"></i>
+                                    </a>
+                                </div>
+                                
+                                <div class="media-body">
+                                    <a href="#">Eugene Kopyov</a> merged <span class="font-weight-semibold">Master</span> and <span class="font-weight-semibold">Dev</span> branches
+                                    <div class="text-muted font-size-sm">Dec 18, 18:36</div>
+                                </div>
+                            </li>
+
+                            <li class="media">
+                                <div class="mr-3">
+                                    <a href="#" class="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon">
+                                        <i class="icon-git-pull-request"></i>
+                                    </a>
+                                </div>
+                                
+                                <div class="media-body">
+                                    Have Carousel ignore keyboard events
+                                    <div class="text-muted font-size-sm">Dec 12, 05:46</div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- /latest updates -->
+
+            </div>
+            <!-- /sidebar content -->
+
+        </div>
+        <!-- /left sidebar component -->
+
+
+        <!-- Right content -->
+        <div class="tab-content w-100">
+            <div class="tab-pane fade active show" id="profile">
+
+                <!-- Quick stats boxes -->
+                <div class="row">
+                    <div class="col-lg-3">
+
+                        <!-- Sent File online -->
+                        <div class="card bg-teal-400">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="font-weight-semibold mb-0">3,450</h3>
+                                    <div class="list-icons ml-auto">
+                                        <a class="list-icons-item" data-action="reload"></a>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    Sent Files
+                                    <div class="font-size-sm opacity-75">489 avg</div>
+                                </div>
+                            </div>
+
+                            <div class="container-fluid">
+                                <div id="members-online"></div>
+                            </div>
+                        </div>
+                        <!-- /Sent File online -->
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <!-- Current server load -->
+                        <div class="card bg-pink-400">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="font-weight-semibold mb-0">49</h3>
+                                    <div class="list-icons ml-auto">
+                                        <a class="list-icons-item" data-action="reload"></a>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    Rejected Files
+                                    <div class="font-size-sm opacity-75">34.6 avg</div>
+                                </div>
+                            </div>
+
+                            <div id="server-load"></div>
+                        </div>
+                        <!-- /current server load -->
+
+                    </div>
+
+                    <div class="col-lg-3">
+
+                        <!-- Today's revenue -->
+                        <div class="card bg-blue-400">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="font-weight-semibold mb-0">18,390</h3>
+                                    <div class="list-icons ml-auto">
+                                        <a class="list-icons-item" data-action="reload"></a>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    Pending Files
+                                    <div class="font-size-sm opacity-75">37,578 avg</div>
+                                </div>
+                            </div>
+
+                            <div id="today-revenue"></div>
+                        </div>
+                        <!-- /today's revenue -->
+
+                    </div>
+                    <div class="col-lg-3">
+
+                        <!-- Today's revenue -->
+                        <div class="card bg-purple-400">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="font-weight-semibold mb-0">18,390</h3>
+                                    <div class="list-icons ml-auto">
+                                        <a class="list-icons-item" data-action="reload"></a>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    Archived Files
+                                    <div class="font-size-sm opacity-75">37,578 avg</div>
+                                </div>
+                            </div>
+
+                            <div id="today-revenue"></div>
+                        </div>
+                        <!-- /today's revenue -->
+
+                    </div>
+                </div>
+                <!-- /quick stats boxes -->
+
+                <!-- Profile info -->
+                <div class="card">
+                    <div class="card-header header-elements-inline">
+                        <h5 class="card-title">Profile information</h5>
+                        <div class="header-elements">
+                            <div class="list-icons">
+                                <a class="list-icons-item" data-action="collapse"></a>
+                                <a class="list-icons-item" data-action="reload"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form action="{% url 'accounts:users_detail' user.id %}" id="formProfile">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 validate">
+                                        <label>Email</label>
+                                        <input type="email" name="email" value="{{ user.email }}" class="form-control">
+                                        <span class="text-danger mySpan"></span>
+                                    </div>
+                                    <div class="col-md-6 validate">
+                                        <label>Full name</label>
+                                        <input type="text" name="name" value="{{ user.name|title }}" class="form-control">
+                                        <span class="text-danger mySpan"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="d-block">Gender</label>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input type="radio" class="form-check-input" value="male" name="gender" {% if user.gender == 'male' %}checked{% endif %}>
+                                                Male
+                                            </label>
+                                        </div>
+            
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input type="radio" class="form-check-input" value="female" name="gender" {% if user.gender == 'female' %}checked{% endif %}>
+                                                Female
+                                            </label>
+                                        </div>
+                                        <br>
+                                        <span class="text-danger mySpan"></span>
+                                    </div>
+                                    <div class="col-md-6 validate">
+                                        <label>Phone Number</label>
+                                        <input type="tel" value="{{ user.phone }}" name="phone" onkeypress="return isNumber(event)" class="form-control">
+                                        <span class="text-danger mySpan"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6 validate">
+                                        <label>Zone</label>
+                                        <select name="zone" class="form-control" data-selected="{{ user.zone }}">
+                                            {% for zone in zone_list %}
+                                            <option value="{{ zone.name }}">{{ zone.name|title }}</option>
+                                            {% endfor %}
+                                        </select> 
+                                        <span class="text-danger mySpan"></span>
+                                    </div>
+                                    {% if request.user.account_type == 'super' %}
+                                    <input type="hidden" readonly name="account_type" value="admin" >
+                                    {% elif request.user.account_type == 'admin' %}
+                                    <div class="col-md-6 validate">
+                                        <label>Account Type</label>
+                                        <select name="account_type" class="form-control">
+                                            <option value="">--Select--</option>
+                                        </select> 
+                                        <span class="text-danger mySpan"></span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary btnSubmit">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /profile info -->
+
+
+                <!-- Password settings -->
+                <div class="card">
+                    <div class="card-header header-elements-inline">
+                        <h5 class="card-title">Reset Password</h5>
+                        <div class="header-elements">
+                            <div class="list-icons">
+                                <a class="list-icons-item" data-action="collapse"></a>
+                                <a class="list-icons-item" data-action="reload"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <form action="#">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Email</label>
+                                        <input type="email" value="{{ user.email }}" readonly="readonly" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Current password</label>
+                                        <input type="password" value="******************************" readonly="readonly" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>New password</label>
+                                        <input type="password" placeholder="Enter new password" class="form-control">
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label>Repeat password</label>
+                                        <input type="password" placeholder="Repeat new password" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- /account settings -->
+
+                <!-- Account settings -->
+                <div class="card">
+                    <div class="card-header header-elements-inline">
+                        <h5 class="card-title">Account settings</h5>
+                        <div class="header-elements">
+                            <div class="list-icons">
+                                <a class="list-icons-item" data-action="collapse"></a>
+                                <a class="list-icons-item" data-action="reload"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        
+                    </div>
+                </div>
+                <!-- /account settings -->
+
+            </div>
+        </div>
+        <!-- /right content -->
+
+    </div>
+    <!-- /inner container -->
+
+</div>
+<!-- /content area -->
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'assets/js/pages/users.js' %}"></script>
+{% endblock scripts %}

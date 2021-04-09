@@ -119,3 +119,25 @@ class UserImage (models.Model):
         if self.image:
             return self.image.url
         return 'assets/images/user.svg'
+
+
+class AccountType (models.Model):
+    name = models.CharField(max_length=60, unique=True)
+    zone = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    #Metadata
+    class Meta :
+        db_table = "account_types"
+
+    #Methods
+    def __str__(self):
+        return self.name
+
+    @property
+    def get_status(self):
+        if self.is_active:
+            return 'Deactivate'
+        return 'Activate'

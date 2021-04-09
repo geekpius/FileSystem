@@ -6,12 +6,12 @@ $(".btnAdd").on('click', function(){
 
 });
 
-$("#formUser").on("submit", function(e){
+$("#formZone").on("submit", function(e){
     e.stopPropagation();
     e.preventDefault();
     var $this = $(this);
     var valid = true;
-    $('#formUser input, #formUser select').each(function() {
+    $('#formZone input').each(function() {
         let $this = $(this);
         
         if(!$this.val()) {
@@ -21,10 +21,10 @@ $("#formUser").on("submit", function(e){
     });
 
     if(valid){
-        $("#formUser .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
+        $("#formZone .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
         let data = $this.serialize();
         $.ajax({
-            url: $("#formUser").attr("action"),
+            url: $("#formZone").attr("action"),
             type: "POST",
             dateType: "json",
             data: data,
@@ -32,32 +32,27 @@ $("#formUser").on("submit", function(e){
                 if(resp.message==='success'){
                     swal({
                         title: "Success",
-                        text: `User is created successful`,
+                        text: `Zone is created successful`,
                         type: "success",
                         showCancelButton: false,
                         confirmButtonClass: "btn-sm text-primary",
                         confirmButtonText: "Okay",
                         },
                     function(){
-                        $("#formUser")[0].reset();
-                        $("#formUser input[name='email']").focus();
+                        window.location.reload();
                     });
                 }else{
-                    if(resp.message.email){
-                        swal('Error', `${resp.message.email}`, 'warning');
-                    }else if(resp.message.name){
+                    if(resp.message.name){
                         swal('Error', `${resp.message.name}`, 'warning');
-                    }else if(resp.message.phone){
-                        swal('Error', `${resp.message.phone}`, 'warning');
-                    }else if(resp.message.zone){
-                        swal('Error', `${resp.message.zone}`, 'warning');
+                    }else{
+                        swal('Error', `${resp.message}`, 'warning');
                     }
                 }
-                $("#formUser .btnSubmit").html('Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i>').attr('disabled',false);
+                $("#formZone .btnSubmit").html('Submit <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
             },
             error: function(resp){
                 console.log('something wrong with request')
-                $("#formUser .btnSubmit").html('Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i>').attr('disabled',false);
+                $("#formZone .btnSubmit").html('Submit <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
             }
         });
     }
@@ -153,26 +148,3 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
     });
   return false;
 });
-
-
-$("#formUser input").on('input', function(){
-    if($(this).val()!=''){
-        $(this).parents('.validate').find('.mySpan').text('');
-    }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
-});
-
-$("#formUser select").on('change', function(){
-    if($(this).val()!=''){
-        $(this).parents('.validate').find('.mySpan').text('');
-    }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
-});
-
-function isNumber(evt) {
-    evt = (evt) ? evt : window.event;
-    var charCode = (evt.which) ? evt.which : evt.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        return false;
-    }
-    return true;
-}
-  

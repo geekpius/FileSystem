@@ -31,6 +31,9 @@
                         <th>Gender</th>
                         <th>Phone</th>
                         <th>Zone</th>
+                        {% if request.user.account_type == 'admin' %}
+                        <th>Account Type</th>
+                        {% endif %}
                         <th>Status</th>
                         <th class="text-center">Actions</th>
                     </tr>
@@ -43,6 +46,9 @@
                         <td>{{ user.gender|title }}</td>
                         <td>{{ user.phone }}</td>
                         <td>{{ user.zone|title }}</td>
+                        {% if request.user.account_type == 'admin' %}
+                        <td>{{ user.account_type|title }}</td>
+                        {% endif %}
                         <td>
                             {% if user.is_active %}
                             <span class="badge badge-success">Active</span>
@@ -51,8 +57,11 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
+                            <a href="{% url 'accounts:users_detail' user.id %}" class="text-primary mr-2"><i class="fa fa-eye"></i></a>
+                            {% if user.account_type != 'admin' or request.user.account_type == 'super' %}
                             <a href="{% url 'accounts:users_deactivate_update' user.id %}" class="{%if user.is_active%}text-danger {%else%} text-success {%endif%} btnDeactivate mr-2" data-status="{{ user.get_status }}" title="{{ user.get_status }} {{ user.name|title }}"><i class="fa {% if user.is_active %} fa-ban {% else %} fa-check-circle {% endif %}"></i></a>
-                            <a href="{% url 'accounts:users_deactivate_update' user.id %}" class="text-danger btnDelete" title="Delete {{ user.name|title }}"><i class="fa fa-trash"></i></a>
+                            <a href="{% url 'accounts:users_delete' user.id %}" class="text-danger btnDelete" title="Delete {{ user.name|title }}"><i class="fa fa-trash"></i></a>                                
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}
