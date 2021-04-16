@@ -1,0 +1,108 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}New file{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Files</span> - Add New</h4>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+
+    <!-- Main charts -->
+    <div class="row">
+        <div class="col-sm-12 col-lg-6 offset-lg-3">
+
+            <!-- Traffic sources -->
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h6 class="card-title">Create New File</h6>
+                    <div class="header-elements"></div>
+                </div>
+
+                <div class="card-body py-0">
+                    <form action="{% url 'files:create' %}" id="formFile">
+                        {% csrf_token %}
+                        <input type="hidden" name="user" value="{{ user.id }}" readonly>
+                        <div class="form-group validate">
+                            <label>File Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Enter file name">
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group validate">
+                            <label>File Type</label>
+                            <select name="type" class="form-control">
+                                <option value="">--Select--</option>
+                                <option value="docx">Document</option>
+                                <option value="pdf">PDF</option>
+                                <option value="xlsx">Excel</option>
+                                <option value="csv">CSV</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        <div class="form-group validate">
+                            <label>File</label>
+                            <input type="file" name="file" class="form-control">
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        
+                        <div class="form-group validate">
+                            <label>Zone</label>
+                            <select name="zone" class="form-control" data-url="{% url 'files:department_get' %}" data-token="{{ csrf_token }}">
+                                <option value="">--Select--</option>
+                                {% for zone in zone_list %}
+                                <option value="{{ zone.name }}">{{ zone.name|title }}</option>
+                                {% endfor %}
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        <div class="form-group validate">
+                            <label>Department</label>
+                            <select name="department" class="form-control" data-url="{% url 'files:receiver_get' %}" data-token="{{ csrf_token }}">
+                                <option value="">--Select--</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group validate">
+                            <label>Receiver</label>
+                            <select name="receiver" class="form-control">
+                                <option value="">--Select--</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <input type="hidden" readonly name="password" value="{{ request.user.get_random_password }}" >
+                        
+                        <input type="hidden" readonly name="owner" value="{% if request.user.account_type == 'super' %} 0 {% else %} {{ request.user.id }} {% endif %}" >
+                        <div class="form-group">
+                            <button type="submit" class="btn bg-primary btn-sm btnSubmit">Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i></button>
+                        </div> 
+                    </form>
+                </div>
+
+            </div>
+            <!-- /traffic sources -->
+
+        </div>
+    </div>
+    <!-- /main charts -->
+
+</div>
+<!-- /content area -->
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'assets/js/pages/files/files.js' %}"></script>
+{% endblock scripts %}
