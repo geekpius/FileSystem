@@ -19,6 +19,112 @@
 <!-- Content area -->
 <div class="content">
 
+
+    <!-- Quick stats boxes -->
+    {% if user.account_type == 'super' %}
+    {% elif user.account_type == 'admin' %}
+    {% else %}
+    <div class="row">
+        <div class="col-lg-3">
+
+            <!-- Sent File online -->
+            <div class="card bg-teal-400">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h3 class="font-weight-semibold mb-0">3,450</h3>
+                        <div class="list-icons ml-auto">
+                            <a class="list-icons-item" data-action="reload"></a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        Sent Files
+                        <div class="font-size-sm opacity-75">489 avg</div>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <div id="members-online1"></div>
+                </div>
+            </div>
+            <!-- /Sent File online -->
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <!-- Current server load -->
+            <div class="card bg-pink-400">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h3 class="font-weight-semibold mb-0">49</h3>
+                        <div class="list-icons ml-auto">
+                            <a class="list-icons-item" data-action="reload"></a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        Rejected Files
+                        <div class="font-size-sm opacity-75">34.6 avg</div>
+                    </div>
+                </div>
+
+                <div id="server-load1"></div>
+            </div>
+            <!-- /current server load -->
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <!-- Today's revenue -->
+            <div class="card bg-blue-400">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h3 class="font-weight-semibold mb-0">18,390</h3>
+                        <div class="list-icons ml-auto">
+                            <a class="list-icons-item" data-action="reload"></a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        Pending Files
+                        <div class="font-size-sm opacity-75">37,578 avg</div>
+                    </div>
+                </div>
+
+                <div id="today-revenue1"></div>
+            </div>
+            <!-- /today's revenue -->
+
+        </div>
+        <div class="col-lg-3">
+
+            <!-- Today's revenue -->
+            <div class="card bg-purple-400">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h3 class="font-weight-semibold mb-0">18,390</h3>
+                        <div class="list-icons ml-auto">
+                            <a class="list-icons-item" data-action="reload"></a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        Archived Files
+                        <div class="font-size-sm opacity-75">37,578 avg</div>
+                    </div>
+                </div>
+
+                <div id="today-load1"></div>
+            </div>
+            <!-- /today's revenue -->
+
+        </div>
+    </div>
+    {% endif %}
+    <!-- /quick stats boxes -->
+    
     <!-- Main charts -->
     <div class="row">
         <div class="col-xl-7">

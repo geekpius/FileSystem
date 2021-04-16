@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'zones.apps.ZonesConfig',
+    'files.apps.FilesConfig',
 ]
 
 MIDDLEWARE = [
