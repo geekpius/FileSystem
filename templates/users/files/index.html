@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="card-body py-0">
-                    <form action="{% url 'files:create' %}" id="formFile">
+                    <form action="{% url 'files:create' %}" id="formFile" enctype="multipart/form-data">
                         {% csrf_token %}
                         <input type="hidden" name="user" value="{{ user.id }}" readonly>
                         <div class="form-group validate">
@@ -70,7 +70,7 @@
                         <div class="form-group validate">
                             <label>Department</label>
                             <select name="department" class="form-control" data-url="{% url 'files:receiver_get' %}" data-token="{{ csrf_token }}">
-                                <option value="">--Select--</option>
+                                <option value="" class="after">--Select--</option>
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
@@ -78,14 +78,11 @@
                         <div class="form-group validate">
                             <label>Receiver</label>
                             <select name="receiver" class="form-control">
-                                <option value="">--Select--</option>
+                                <option value="" class="after">--Select--</option>
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
 
-                        <input type="hidden" readonly name="password" value="{{ request.user.get_random_password }}" >
-                        
-                        <input type="hidden" readonly name="owner" value="{% if request.user.account_type == 'super' %} 0 {% else %} {{ request.user.id }} {% endif %}" >
                         <div class="form-group">
                             <button type="submit" class="btn bg-primary btn-sm btnSubmit">Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i></button>
                         </div> 

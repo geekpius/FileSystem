@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from files.views import (FileCreateView, DepartmentGetView, ReceiverGetView)
+from files.views import (FileCreateView, DepartmentGetView, ReceiverGetView, FileListChangeStatusView)
 
 app_name = 'files'
 
@@ -7,6 +7,7 @@ urlpatterns = [
     path('', FileCreateView.as_view(), name='create'),
     path('deparments', DepartmentGetView.as_view(), name='department_get'),
     path('receivers', ReceiverGetView.as_view(), name='receiver_get'),
+    path('view', FileListChangeStatusView.as_view(), name='view'),
     # path('<int:id>/delete', ZoneDeleteView.as_view(), name='zone_delete'),
     # path('<int:id>', ZoneDeactivateView.as_view(), name='zone_activate'),
     # path('departments', DepartmentListCreateView.as_view(), name='zone_departments'),

@@ -82,8 +82,11 @@ class UserCreateView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         zones = Zone.objects.filter(~Q(name='head'), is_active=True)
-        account_types = AccountType.objects.filter(zone=request.user.zone)
-        departments  = Department.objects.filter(zone=request.user.zone)
+        account_types = AccountType.objects.filter(zone=request.user.zone, is_active=True)
+        if request.user.account_type == 'super':
+            departments  = Department.objects.filter(~Q(zone='head'), is_active=True)
+        else:
+            departments  = Department.objects.filter(zone=request.user.zone, is_active=True)
         context = {
             'zone_list': zones,
             'type_list': account_types,

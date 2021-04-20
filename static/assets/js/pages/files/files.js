@@ -3,6 +3,7 @@ $("#formFile").on("submit", function(e){
     e.stopPropagation();
     e.preventDefault();
     var $this = $(this);
+    var formData = new FormData(this);
     var valid = true;
     $('#formFile input, #formFile select').each(function() {
         let $this = $(this);
@@ -15,17 +16,19 @@ $("#formFile").on("submit", function(e){
 
     if(valid){
         $("#formFile .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
-        let data = $this.serialize();
         $.ajax({
             url: $("#formFile").attr("action"),
             type: "POST",
             dateType: "json",
-            data: data,
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
             success: function(resp){
                 if(resp.message==='success'){
                     swal({
                         title: "Success",
-                        text: `User is created successful`,
+                        text: `File is created successful`,
                         type: "success",
                         showCancelButton: false,
                         confirmButtonClass: "btn-sm text-primary",
@@ -37,7 +40,9 @@ $("#formFile").on("submit", function(e){
                     });
                 }else{
                     if(resp.message.name){
-                        swal('Error', `${resp.message.name}`, 'warning');
+                        swal('Name', `${resp.message.name}`, 'warning');
+                    }else if(resp.message.file){
+                        swal('File', `${resp.message.file}`, 'warning');
                     }else{
                         swal('Error', `${resp.message}`, 'warning');
                     }
@@ -70,34 +75,22 @@ $("#formFile select[name='zone']").on("change", function(e){
         data: data,
         success: function(resp){
             if(resp.message === 'success'){
-                console.log(resp.data)
+                let options = '';
+                resp.data.forEach(department => {
+                    options+='<option value='+department.name+'>'+department.name +'</option>';
+                });
+                $("#formFile select[name='department']").find('.after').after(options);
             }
-            // if(resp.message==='success'){
-            //     swal({
-            //         title: "Success",
-            //         text: `User is created successful`,
-            //         type: "success",
-            //         showCancelButton: false,
-            //         confirmButtonClass: "btn-sm text-primary",
-            //         confirmButtonText: "Okay",
-            //         },
-            //     function(){
-            //         $("#formFile")[0].reset();
-            //         $("#formFile input[name='name']").focus();
-            //     });
-            // }else{
-            //     if(resp.message.name){
-            //         swal('Error', `${resp.message.name}`, 'warning');
-            //     }else{
-            //         swal('Error', `${resp.message}`, 'warning');
-            //     }
-            // }
-            // $("#formFile .btnSubmit").html('Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i>').attr('disabled',false);
+            else{
+                $("#formFile select[name='department']").find('.after').nextAll().remove();
+            }
         },
         error: function(resp){
             console.log('something wrong with request')
         }
     });
+    }else{
+        $("#formFile select[name='department']").find('.after').nextAll().remove();
     }
     return false;
 });
@@ -110,7 +103,7 @@ $("#formFile select[name='department']").on("change", function(e){
     if($("#formFile select[name='zone']").val() != '' && $this.val() != ''){
         let data = {
             csrfmiddlewaretoken: $this.data('token'),
-            zone: $("#formFile select[name='department']").val(),
+            zone: $("#formFile select[name='zone']").val(),
             department: $this.val()
         }
         $.ajax({
@@ -120,34 +113,86 @@ $("#formFile select[name='department']").on("change", function(e){
         data: data,
         success: function(resp){
             if(resp.message === 'success'){
-                console.log(resp.data)
+                let options = '';
+                resp.data.forEach(receiver => {
+                    options+=`<option value="${receiver.id}">${receiver.name} (${receiver.account_type.toUpperCase()})</option>`;
+                });
+                $("#formFile select[name='receiver']").find('.after').after(options);
             }
-            // if(resp.message==='success'){
-            //     swal({
-            //         title: "Success",
-            //         text: `User is created successful`,
-            //         type: "success",
-            //         showCancelButton: false,
-            //         confirmButtonClass: "btn-sm text-primary",
-            //         confirmButtonText: "Okay",
-            //         },
-            //     function(){
-            //         $("#formFile")[0].reset();
-            //         $("#formFile input[name='name']").focus();
-            //     });
-            // }else{
-            //     if(resp.message.name){
-            //         swal('Error', `${resp.message.name}`, 'warning');
-            //     }else{
-            //         swal('Error', `${resp.message}`, 'warning');
-            //     }
-            // }
-            // $("#formFile .btnSubmit").html('Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i>').attr('disabled',false);
+            else{
+                $("#formFile select[name='receiver']").find('.after').nextAll().remove();
+            }
         },
         error: function(resp){
             console.log('something wrong with request')
         }
     });
+    }else{
+        $("#formFile select[name='receiver']").find('.after').nextAll().remove();
+    }
+    return false;
+});
+
+
+$(".datatable-basic tbody tr").on('click', '.btnChange', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var $this = $(this);
+    $("#changeModal .modal-title").text(`Change ${$this.parents('.record').find('td').eq(2).text()} file`);
+    $("#formChange input[name='file_id']").val($this.data('id'));
+    $("#formChange select[name='status']").val($this.data('status'));
+    $("#changeModal").modal('show');
+    return false;
+});
+
+
+$("#formChange").on("submit", function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var $this = $(this);
+    var valid = true;
+    $('#formChange select').each(function() {
+        let $this = $(this);
+        
+        if(!$this.val()) {
+            valid = false;
+            $this.parents('.validate').find('.mySpan').text('The '+$this.attr('name').replace(/[\_]+/g, ' ')+' field is required');
+        }
+    });
+
+    if(valid){
+        $("#formChange .btnEdit").text('Saving Changes...').attr('disabled',true);
+        let data = $this.serialize();
+        $.ajax({
+            url: $("#formChange").attr("action"),
+            type: "POST",
+            dateType: "json",
+            data: data,
+            success: function(resp){
+                if(resp.message==='success'){
+                    swal({
+                        title: "Changed",
+                        text: `Status changed successful`,
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-sm text-primary",
+                        confirmButtonText: "Okay",
+                        },
+                    function(){
+                        $("#changeModal").modal('hide');
+                        window.location.reload();
+                    });
+
+                }else{
+                    swal('Error', `${resp.message}`, 'warning');
+                }
+                $("#formChange .btnEdit").text('Save changes').attr('disabled',false);
+            },
+            error: function(resp){
+                console.log('something wrong with request')
+                $("#formChange .btnEdit").text('Save changes').attr('disabled',false);
+            }
+        });
     }
     return false;
 });
@@ -244,54 +289,6 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
 
 
 
-$("#formProfile").on("submit", function(e){
-    e.stopPropagation();
-    e.preventDefault();
-    var $this = $(this);
-    var valid = true;
-    $('#formProfile input, #formProfile select').each(function() {
-        let $this = $(this);
-        
-        if(!$this.val()) {
-            valid = false;
-            $this.parents('.validate').find('.mySpan').text('The '+$this.attr('name').replace(/[\_]+/g, ' ')+' field is required');
-        }
-    });
-
-    if(valid){
-        $("#formProfile .btnSubmit").html('Saving Changes...').attr('disabled',true);
-        let data = $this.serialize();
-        $.ajax({
-            url: $("#formProfile").attr("action"),
-            type: "POST",
-            dateType: "json",
-            data: data,
-            success: function(resp){
-                if(resp.message==='success'){
-                    swal('Updated', 'Profile updated successful', 'success');
-                }else{
-                    if(resp.message.email){
-                        swal('Error', `${resp.message.email}`, 'warning');
-                    }else if(resp.message.name){
-                        swal('Error', `${resp.message.name}`, 'warning');
-                    }else if(resp.message.phone){
-                        swal('Error', `${resp.message.phone}`, 'warning');
-                    }else if(resp.message.zone){
-                        swal('Error', `${resp.message.zone}`, 'warning');
-                    }else{
-                        swal('Error', `${resp.message}`, 'warning');
-                    }
-                }
-                $("#formProfile .btnSubmit").html('Save changes').attr('disabled',false);
-            },
-            error: function(resp){
-                console.log('something wrong with request')
-                $("#formProfile .btnSubmit").html('Save changes').attr('disabled',false);
-            }
-        });
-    }
-    return false;
-});
 
 
 $("#formUser input, #formProfile input").on('input', function(){

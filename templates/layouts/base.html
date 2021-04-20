@@ -243,6 +243,7 @@
                         {% url 'zones:zone_create' as zone_url %}
                         {% url 'zones:zone_departments' as department_url %}
                         {% url 'files:create' as files_url %}
+                        {% url 'files:view' as file_view_url %}
 						<!-- Main -->
 						<li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
 						<li class="nav-item">
@@ -294,10 +295,10 @@
 						{% endif %}
 
 						<li class="nav-item nav-item-submenu">
-							<a href="#" class="nav-link {% if request.path == files_url %}active{% endif %} {% if request.path == files_url %}active{% endif %}"><i class="icon-file-plus"></i> <span>Files</span></a>
+							<a href="#" class="nav-link {% if request.path == files_url %}active{% endif %} {% if request.path == file_view_url %}active{% endif %}"><i class="icon-file-plus"></i> <span>Files</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="Files">
 								<li class="nav-item"><a href="{% url 'files:create' %}" class="nav-link {% if request.path == files_url %}active{% endif %}">Create New</a></li>
-								<li class="nav-item"><a href="{% url 'files:create' %}" class="nav-link {% if request.path == files_url %}active{% endif %}">View Files</a></li>
+								<li class="nav-item"><a href="{% url 'files:view' %}" class="nav-link {% if request.path == file_view_url %}active{% endif %}">View Files</a></li>
 							</ul>
 						</li>
 

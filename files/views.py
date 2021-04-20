@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.template import loader
+from django.db.models import Q
 
 from files.forms import FileCreateForm
 from files.models import File
@@ -35,10 +36,10 @@ class DepartmentGetView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             zone = request.POST['zone']
-            departments = Department.objects.filter(zone=zone)
+            departments = Department.objects.filter(zone=zone).values('id', 'name')
             data = {
                 'message': 'success',
-                'data': departments
+                'data': list(departments)
             }
             return JsonResponse(data, safe=False)
         return JsonResponse({"message": "Wrong request"}) 
@@ -50,12 +51,33 @@ class ReceiverGetView(LoginRequiredMixin, View):
         if request.is_ajax():
             zone = request.POST['zone']
             department = request.POST['department']
-            receivers = User.objects.filter(zone=zone, department=department)
-            receiver_serializer = serializers.serialize('json', receivers)
-            return JsonResponse({"message": "success", 'data': receiver_serializer}, safe=False) 
+            receivers = User.objects.filter(~Q(id=request.user.id), Q(department=department) | Q(department__isnull=True), zone=zone,).values('id', 'name', 'account_type')
+            data = {
+                'message': 'success',
+                'data': list(receivers)
+            }
+            return JsonResponse(data, safe=False) 
         return JsonResponse({"message": "Wrong request"}) 
 
 
+class FileListChangeStatusView(LoginRequiredMixin, View):
+    template_name = "users/files/file_table.html"
+
+    def get(self, request, *args, **kwargs):
+        files = File.objects.all()
+        context = {
+            "file_list": files
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            id = request.POST['file_id']
+            file = get_object_or_404(File, pk=id)
+            file.status = request.POST['status'] 
+            file.save()
+            return JsonResponse({"message": "success"})  
+        return JsonResponse({"message": "Wrong request"})
 
 # class ZoneDeactivateView(LoginRequiredMixin, View):
 

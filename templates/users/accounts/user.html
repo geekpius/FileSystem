@@ -92,7 +92,6 @@
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
-                        {% if request.user.account_type == 'admin' %}
                         <div class="form-group validate">
                             <label>Department</label>
                             <select name="department" class="form-control">
@@ -103,7 +102,6 @@
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
-                        {% endif %}
 
                         <input type="hidden" readonly name="password" value="{{ request.user.get_random_password }}" >
                         

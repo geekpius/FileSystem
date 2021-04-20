@@ -3,6 +3,9 @@ from django.db import models
 from accounts.models import User
 
 class File (models.Model):
+    PENDING = 1
+    REJECTED = 0
+    ACCEPTED = 2
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="files", on_delete=models.CASCADE)
     name = models.CharField(max_length=100, unique=True)
     type = models.CharField(max_length=20)
