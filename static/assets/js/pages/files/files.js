@@ -140,7 +140,6 @@ $(".datatable-basic tbody tr").on('click', '.btnChange', function(e){
     var $this = $(this);
     $("#changeModal .modal-title").text(`Change ${$this.parents('.record').find('td').eq(2).text()} file`);
     $("#formChange input[name='file_id']").val($this.data('id'));
-    $("#formChange select[name='status']").val($this.data('status'));
     $("#changeModal").modal('show');
     return false;
 });

@@ -60,40 +60,6 @@
         </div>
     </div>
 
-    <!-- Basic modal -->
-    <div id="changeModal" class="modal fade" tabindex="-1">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-               <form action="" id="formChange">
-                <div class="modal-body">
-                    {% csrf_token %}
-                    <input type="hidden" name="file_id" readonly>
-                    <div class="form-group validate">
-                        <label>Status</label>
-                        <select name="status" class="form-control">
-                            <option value="1">PENDING</option>
-                            <option value="2">ACCEPTED</option>
-                            <option value="0">REJECTED</option>
-                        </select> 
-                        <span class="text-danger mySpan"></span>
-                    </div> 
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link text-danger" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn bg-primary btn-sm btnEdit">Save changes</button>
-                </div>
-               </form>
-            </div>
-        </div>
-    </div>
-    <!-- /basic modal -->
-
 
 </div>
 <!-- /content area -->
