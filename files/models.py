@@ -23,8 +23,22 @@ class File (models.Model):
     def __str__(self):
         return self.name
 
-    # @property
-    # def get_status(self):
-    #     if self.is_active:
-    #         return 'Deactivate'
-    #     return 'Activate'
+
+
+class ArchiveFile (models.Model):
+    ACCEPTED = 1
+    REJECTED = 0
+    FORWARDED = 2
+    file = models.ForeignKey(File, related_name="archive_files", on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_archive_files", on_delete=models.CASCADE)
+    status = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    #Metadata
+    class Meta :
+        db_table = "archive_files"
+
+    #Methods
+    def __str__(self):
+        return self.file
