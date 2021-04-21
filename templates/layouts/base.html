@@ -246,6 +246,7 @@
                         {% url 'files:view_pending' as file_pending_url %}
                         {% url 'files:view_received' as file_received_url %}
                         {% url 'files:view_sent' as file_sent_url %}
+                        {% url 'files:archives' as archives_url %}
 						<!-- Main -->
 						<li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
 						<li class="nav-item">
@@ -304,6 +305,15 @@
 								<li class="nav-item"><a href="{% url 'files:view_received' %}" class="nav-link {% if request.path == file_received_url %}active{% endif %}">Received Files</a></li>
 								<li class="nav-item"><a href="{% url 'files:view_sent' %}" class="nav-link {% if request.path == file_sent_url %}active{% endif %}">Sent Files</a></li>
 							</ul>
+						</li>
+
+						<li class="nav-item">
+							<a href="{% url 'files:archives'  %}" class="nav-link {% if request.path == archives_url %}active{% endif %}">
+								<i class="fa fa-file-archive"></i>
+								<span>
+									Archives
+								</span>
+							</a>
 						</li>
 
 						<!-- /main -->

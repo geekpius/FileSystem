@@ -102,29 +102,13 @@ class SentFileListView(LoginRequiredMixin, View):
         return render(request, self.template_name, context)
 
 
+class ArchiveFileListView(LoginRequiredMixin, View):
+    template_name = "users/files/archive_file.html"
 
-# class DepartmentDeactivateDeleteView(LoginRequiredMixin, View):
-#     login_url = "accounts:login"
-#     redirect_field_name = "redirect_to"
-
-#     def get(self, request, id, *args, **kwargs):
-#         if request.is_ajax():
-#             department = get_object_or_404(Department, pk=id)
-#             department.delete()
-#             return JsonResponse({'message':'success'})
-#         return HttpResponse('Wrong request')
-
-#     def post(self, request, id, *args, **kwargs):
-#         if request.is_ajax():
-#             department = get_object_or_404(Department, pk=id)
-#             if department.is_active:
-#                 department.is_active = False
-#                 department.save()
-#                 return JsonResponse({'message':'success'})
-#             else:
-#                 department.is_active = True
-#                 department.save()
-#                 return JsonResponse({'message':'success'})
-
-#         return HttpResponse('Wrong request')
+    def get(self, request, *args, **kwargs):
+        files = File.objects.filter(status=File.ACCEPTED)
+        context = {
+            "file_list": files
+        }
+        return render(request, self.template_name, context)
 

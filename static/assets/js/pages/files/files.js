@@ -291,13 +291,13 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
 
 
 
-$("#formUser input, #formProfile input").on('input', function(){
+$("#formFile input, #formChange input").on('input', function(){
     if($(this).val()!=''){
         $(this).parents('.validate').find('.mySpan').text('');
     }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
 });
 
-$("#formUser select, #formProfile select").on('change', function(){
+$("#formFile select, #formChange select").on('change', function(){
     if($(this).val()!=''){
         $(this).parents('.validate').find('.mySpan').text('');
     }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
@@ -311,5 +311,3 @@ function isNumber(evt) {
     }
     return true;
 }
-  
-$("#formProfile select[name='zone']").val($("#formProfile select[name='zone']").data('selected'));
