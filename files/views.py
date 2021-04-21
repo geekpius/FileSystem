@@ -60,11 +60,11 @@ class ReceiverGetView(LoginRequiredMixin, View):
         return JsonResponse({"message": "Wrong request"}) 
 
 
-class FileListChangeStatusView(LoginRequiredMixin, View):
-    template_name = "users/files/file_table.html"
+class PendingFileListChangeStatusView(LoginRequiredMixin, View):
+    template_name = "users/files/pending_file.html"
 
     def get(self, request, *args, **kwargs):
-        files = File.objects.all()
+        files = File.objects.filter(receiver=request.user)
         context = {
             "file_list": files
         }
@@ -79,40 +79,28 @@ class FileListChangeStatusView(LoginRequiredMixin, View):
             return JsonResponse({"message": "success"})  
         return JsonResponse({"message": "Wrong request"})
 
-# class ZoneDeactivateView(LoginRequiredMixin, View):
 
-#     def get(self, request, id, *args, **kwargs):
-#         if request.is_ajax():
-#             zone = Zone.objects.get(id=id)
-#             if zone.is_active:
-#                 zone.is_active = False
-#                 zone.save()
-#             else:
-#                 zone.is_active = True
-#                 zone.save()
-#             return JsonResponse({"message": "success"}) 
-#         return JsonResponse({"message": "Wrong request"}) 
+class ReceivedFileListView(LoginRequiredMixin, View):
+    template_name = "users/files/receive_file.html"
+
+    def get(self, request, *args, **kwargs):
+        files = File.objects.filter(~Q(status=File.PENDING), receiver=request.user)
+        context = {
+            "file_list": files
+        }
+        return render(request, self.template_name, context)
 
 
-# class DepartmentListCreateView(LoginRequiredMixin, View):
-#     template_name = "users/zones/department.html"
-#     form_class = DepartmentForm
+class SentFileListView(LoginRequiredMixin, View):
+    template_name = "users/files/sent_file.html"
 
-#     def get(self, request, *args, **kwargs):
-#         departments = Department.objects.filter(zone=request.user.zone)
-#         context = {
-#             "department_list": departments
-#         }
-#         return render(request, self.template_name, context)
+    def get(self, request, *args, **kwargs):
+        files = File.objects.filter(user=request.user)
+        context = {
+            "file_list": files
+        }
+        return render(request, self.template_name, context)
 
-#     def post(self, request, *args, **kwargs):
-#         if request.is_ajax():
-#             form = self.form_class(request.POST)
-#             if form.is_valid():
-#                 form.save()
-#                 return JsonResponse({"message": "success"}) 
-#             return JsonResponse({"message": form.errors})  
-#         return JsonResponse({"message": "Wrong request"})
 
 
 # class DepartmentDeactivateDeleteView(LoginRequiredMixin, View):
