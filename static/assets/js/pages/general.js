@@ -16,3 +16,31 @@ var xhr = new XMLHttpRequest();
          }
      }
 }
+
+function getNotification(){
+   $.ajax({
+      url: '',
+      type: "GET",
+      success: function(resp){
+          $(".selector").html(resp);
+      },
+      error: function(resp){
+          console.log('something wrong with request')
+      }
+  });
+}
+
+function getMessages(){
+   $.ajax({
+      url: '',
+      type: "GET",
+      success: function(resp){
+          $(".selector").html(resp);
+      },
+      error: function(resp){
+          console.log('something wrong with request')
+      }
+  });
+}
+
+setTimeout(function () { getNotification(); getMessages(); }, 5000);
