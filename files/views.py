@@ -83,7 +83,6 @@ class PendingFileListChangeStatusView(LoginRequiredMixin, View):
         return JsonResponse({"message": "Wrong request"})
 
 
-
 class ReceivedFileListView(LoginRequiredMixin, View):
     template_name = "users/files/receive_file.html"
 

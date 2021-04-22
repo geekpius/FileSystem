@@ -32,6 +32,7 @@ class ArchiveFile (models.Model):
     file = models.ForeignKey(File, related_name="archive_files", on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_archive_files", on_delete=models.CASCADE)
     status = models.IntegerField(default=1)
+    is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -25,5 +25,42 @@
             </div>
         </li>
         {% endfor %}
+        {% for accepted in accepted_notification_list %}
+        <li class="media">
+            <div class="mr-3 position-relative">
+                <img src="{% static accepted.user.user_image.get_user_image %}" width="36" height="36" class="rounded-circle" alt="">
+            </div>
+
+            <div class="media-body">
+                <div class="media-title"> 
+                    <a href="{% url 'files:archives' %}">
+                        <span class="font-weight-semibold">{{ accepted.user.name|title }} - {{ accepted.user.department }}</span>
+                        <span class="text-muted float-right font-size-sm">{{ accepted.created_at|date:'F d, Y' }}</span>
+                    </a>
+                </div>
+
+                <span class="text-muted">Accepted a file ({{ accepted.file.name }}) - <span class="text-success small">ACCEPTED</span></span>
+            </div>
+        </li>
+        {% endfor %}
+
+        {% for rejected in rejected_notification_list %}
+        <li class="media">
+            <div class="mr-3 position-relative">
+                <img src="{% static rejected.user.user_image.get_user_image %}" width="36" height="36" class="rounded-circle" alt="">
+            </div>
+
+            <div class="media-body">
+                <div class="media-title"> 
+                    <a href="{% url 'files:archives' %}">
+                        <span class="font-weight-semibold">{{ rejected.user.name|title }} - {{ rejected.user.department }}</span>
+                        <span class="text-muted float-right font-size-sm">{{ rejected.created_at|date:'F d, Y' }}</span>
+                    </a>
+                </div>
+
+                <span class="text-muted">Rejected a file ({{ rejected.file.name }}) - <span class="text-danger small">REJECTED</span></span>
+            </div>
+        </li>
+        {% endfor %}
     </ul>
 </div>

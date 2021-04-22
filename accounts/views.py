@@ -13,7 +13,7 @@ from accounts.forms import (LoginForm, RegisterUserForm, UserImageForm, Register
 from accounts.models import User, UserImage, AccountType
 from zones.models import Department
 from zones.models import Zone
-from files.models import File
+from files.models import File, ArchiveFile
 from django.db.models import Q
 import os
 
@@ -297,9 +297,12 @@ class UserNotificationCount(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             pending_files_count = File.objects.filter(receiver=request.user, status=File.PENDING).count()
+            accepted_files_count = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.ACCEPTED, is_read=False).count()
+            rejected_files_count = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.REJECTED, is_read=False).count()
+            notification_count = pending_files_count+accepted_files_count+rejected_files_count
             data = {
                 "message": 'success',
-                "notification_count": pending_files_count,
+                "notification_count": notification_count
             }
             return JsonResponse(data)
         
@@ -315,8 +318,12 @@ class UserNotificationView(LoginRequiredMixin, View):
         if request.is_ajax():
             template = loader.get_template(self.template_name)
             pending_files = File.objects.filter(receiver=request.user, status=File.PENDING)
+            accepted_files = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.ACCEPTED, is_read=False)
+            rejected_files = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.REJECTED, is_read=False)
             context = {
                 "pending_notification_list": pending_files,
+                "accepted_notification_list": accepted_files,
+                "rejected_notification_list": rejected_files,
             }
             return HttpResponse(template.render(context, self.request))
         
