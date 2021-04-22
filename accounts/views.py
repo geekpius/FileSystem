@@ -13,6 +13,7 @@ from accounts.forms import (LoginForm, RegisterUserForm, UserImageForm, Register
 from accounts.models import User, UserImage, AccountType
 from zones.models import Department
 from zones.models import Zone
+from files.models import File
 from django.db.models import Q
 import os
 
@@ -286,4 +287,37 @@ class UserDetailUpdateView(LoginRequiredMixin, View):
                         return JsonResponse({'message':'success'})
                     return JsonResponse({'message':'Input values did not change'})
                 return JsonResponse({'message':form.errors})
+        return HttpResponse('Wrong request')
+
+
+class UserNotificationCount(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            pending_files_count = File.objects.filter(receiver=request.user, status=File.PENDING).count()
+            data = {
+                "message": 'success',
+                "notification_count": pending_files_count,
+            }
+            return JsonResponse(data)
+        
+        return JsonResponse({'message':'Wrong request'})
+
+
+class UserNotificationView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/accounts/notifications.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            template = loader.get_template(self.template_name)
+            pending_files = File.objects.filter(receiver=request.user, status=File.PENDING)
+            context = {
+                "pending_notification_list": pending_files,
+            }
+            return HttpResponse(template.render(context, self.request))
+        
         return HttpResponse('Wrong request')

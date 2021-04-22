@@ -1,28 +1,50 @@
-var xhr = new XMLHttpRequest();
- //index.php is in my web
- xhr.open('GET', 'https://www.google.com', true);
- xhr.send();
 
- xhr.addEventListener("readystatechange", processRequest, false);
-
- function processRequest(e) {
-     if (xhr.readyState == 4) {
-         if (xhr.status >= 200 && xhr.status < 304) {
-            $(".onlineOffline").addClass('bg-success');
-            $(".onlineOffline").text('Online');
-         } else {
+ function processRequest() {
+    console.log('request');
+    $.ajax({
+        url: window.location.href,
+        type: "GET",
+        success: function(resp, textStatus, jqXHR){
+            if(jqXHR.status == 200){
+                $(".onlineOffline").addClass('bg-success');
+                $(".onlineOffline").text('Online');
+            }else{
+                $(".onlineOffline").removeClass('bg-success');
+                $(".onlineOffline").text('Offline');
+            }
+        },
+        error: function(resp){
+            console.log('something wrong with request')
             $(".onlineOffline").removeClass('bg-success');
             $(".onlineOffline").text('Offline');
-         }
-     }
+        }
+    });
 }
+
+function getNotificationCount(){
+    $.ajax({
+       url: $('.notificationCount').data('url'),
+       type: "GET",
+       success: function(resp){
+           if(resp.message ==='success'){
+            $(".notificationCount").text(resp.notification_count);
+           }else{
+                $(".notificationCount").text('');
+           }
+       },
+       error: function(resp){
+           console.log('something wrong with request')
+       }
+   });
+ }
+ 
 
 function getNotification(){
    $.ajax({
-      url: '',
+      url: $('.notifications').data('url'),
       type: "GET",
       success: function(resp){
-          $(".selector").html(resp);
+          $(".notifications").html(resp);
       },
       error: function(resp){
           console.log('something wrong with request')
@@ -31,6 +53,7 @@ function getNotification(){
 }
 
 function getMessages(){
+    console.log('message');
    $.ajax({
       url: '',
       type: "GET",
@@ -43,4 +66,12 @@ function getMessages(){
   });
 }
 
-setTimeout(function () { getNotification(); getMessages(); }, 5000);
+getNotificationCount();
+getNotification();
+
+setInterval(function(){
+    getNotificationCount();
+    getNotification();
+    getMessages();
+    processRequest();
+}, 10000);

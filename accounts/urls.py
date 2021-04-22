@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 from accounts.views import (LoginView, LogoutView, ResetPasswordView, DashboardView, UserCreateView, UserListView, 
                             UserDeactivateView, UserDeleteView, UserDetailUpdateView, AccountTypeCreateView,
-                            AccountTypeDeactivateDeleteView)
+                            AccountTypeDeactivateDeleteView, UserNotificationView, UserNotificationCount)
 
 app_name = 'accounts'
 
@@ -17,4 +17,7 @@ urlpatterns = [
     path('users-view/<int:id>', UserDeactivateView.as_view(), name='users_deactivate_update'),
     path('users-view/<int:id>/delete', UserDeleteView.as_view(), name='users_delete'),
     path('users-view/<int:id>/detail', UserDetailUpdateView.as_view(), name='users_detail'),
+
+    path('users/notifications/counts', UserNotificationCount.as_view(), name='users_notifications_counts'),
+    path('users/notifications', UserNotificationView.as_view(), name='users_notifications'),
 ]
