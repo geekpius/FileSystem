@@ -64,7 +64,7 @@ class PendingFileListChangeStatusView(LoginRequiredMixin, View):
     template_name = "users/files/pending_file.html"
 
     def get(self, request, *args, **kwargs):
-        files = File.objects.filter(receiver=request.user)
+        files = File.objects.filter(receiver=request.user, status=File.PENDING)
         context = {
             "file_list": files
         }
