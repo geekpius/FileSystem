@@ -35,15 +35,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for file in file_list %}
+                    {% for archive in file_list %}
                     <tr class="record">
-                        <td>{{ file.created_at }}</td>
-                        <td>{{ file.user.name|title }}</td>  
-                        <td>{{ file.receiver.name|title }}</td>  
-                        <td>{{ file.name|title }}</td>
-                        <td>{{ file.type|upper }}</td>
+                        <td>{{ archive.created_at }}</td>
+                        <td>{{ archive.file.user.name|title }}</td>  
+                        <td>{{ archive.file.receiver.name|title }}</td>  
+                        <td>{{ archive.file.name|title }}</td>
+                        <td>{{ archive.file.type|upper }}</td>
                         <td class="text-center">
-                            <a href="{{ file.file.url }}" class="text-primary mr-2" title="Download {{ file.name|title }}"><i class="fa fa-file-download"></i></a>
+                            <a href="{{ archive.file.file.url }}" class="text-primary mr-2" title="Download {{ archive.file.name|title }}"><i class="fa fa-file-download"></i></a>
                         </td>
                     </tr>
                     {% endfor %}
