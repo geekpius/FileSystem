@@ -4,9 +4,10 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.views import View
 from django.template import loader
 from django.db.models import Q
+from django.db import transaction
 
 from files.forms import FileCreateForm
-from files.models import File
+from files.models import File, ArchiveFile
 from zones.models import Zone, Department
 from accounts.models import User
 
@@ -70,14 +71,17 @@ class PendingFileListChangeStatusView(LoginRequiredMixin, View):
         }
         return render(request, self.template_name, context)
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             id = request.POST['file_id']
             file = get_object_or_404(File, pk=id)
             file.status = request.POST['status'] 
             file.save()
+            ArchiveFile.objects.create(user=request.user, file=file, status=file.status)
             return JsonResponse({"message": "success"})  
         return JsonResponse({"message": "Wrong request"})
+
 
 
 class ReceivedFileListView(LoginRequiredMixin, View):
