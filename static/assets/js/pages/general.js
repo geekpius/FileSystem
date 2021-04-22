@@ -1,6 +1,5 @@
 
  function processRequest() {
-    console.log('request');
     $.ajax({
         url: window.location.href,
         type: "GET",

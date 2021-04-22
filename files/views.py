@@ -109,8 +109,8 @@ class ArchiveFileListView(LoginRequiredMixin, View):
     template_name = "users/files/archive_file.html"
 
     def get(self, request, *args, **kwargs):
-        ArchiveFile.objects.all().update(is_read=True)
-        files = ArchiveFile.objects.filter(~Q(status=File.PENDING), file__user=request.user)
+        ArchiveFile.objects.filter(file__user=request.user, is_read=False).update(is_read=True)
+        files = ArchiveFile.objects.filter(~Q(status=File.PENDING), Q(file__user=request.user) | Q(file__receiver=request.user))
         context = {
             "file_list": files
         }

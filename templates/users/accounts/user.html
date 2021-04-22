@@ -71,6 +71,7 @@
                         {% if request.user.account_type == 'super' %}
                         <input type="hidden" readonly name="account_type" value="admin" >
                         {% else %}
+                        
                         <div class="form-group validate">
                             <label>Account Type</label>
                             <select name="account_type" class="form-control">
@@ -82,6 +83,8 @@
                             <span class="text-danger mySpan"></span>
                         </div> 
                         {% endif %}
+
+                        {% if request.user.account_type == 'super' %}
                         <div class="form-group validate">
                             <label>Zone</label>
                             <select name="zone" class="form-control">
@@ -92,6 +95,11 @@
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
+                        {% else %}
+                        <input type="hidden" name="zone" class="form-control" readonly value="{{ user.zone }}">
+                        {% endif %}
+
+                        {% if request.user.account_type == 'admin' %}
                         <div class="form-group validate">
                             <label>Department</label>
                             <select name="department" class="form-control">
@@ -102,6 +110,7 @@
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
+                        {% endif %}
 
                         <input type="hidden" readonly name="password" value="{{ request.user.get_random_password }}" >
                         

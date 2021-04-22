@@ -51,9 +51,9 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="{{ file.file.url }}" class="text-primary mr-2" title="Download {{ file.name|title }}"><i class="fa fa-file-download"></i></a>
+                            <a href="{{ file.file.url }}" class="text-primary mr-3" title="Download {{ file.name|title }}"><i class="fa fa-download"></i></a>
                             {% if file.status == file.PENDING %}
-                            <a href="#" class=" btnChange mr-2" data-id="{{ file.id }}" data-status="{{ file.status }}" title="Change status"><i class="fa fa-edit"></i></a>
+                            <a href="#" class=" btnChange" data-id="{{ file.id }}" data-status="{{ file.status }}" title="Change status"><i class="fa fa-edit"></i></a>
                             {% endif %}
                             <!-- <a href="{% url 'accounts:users_delete' user.id %}" class="text-danger btnDelete" title="Delete {{ user.name|title }}"><i class="fa fa-trash"></i></a>                                
                              -->

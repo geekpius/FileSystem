@@ -51,7 +51,8 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="{{ file.file.url }}" class="text-primary mr-2" title="Download {{ file.name|title }}"><i class="fa fa-file-download"></i></a>
+                            <a href="{{ file.file.url }}" class="text-primary mr-3" title="Download {{ file.name|title }}"><i class="fa fa-download"></i></a>
+                            <a href="#" class="text-primary" title="Resend {{ file.name|title }} to {{ file.receiver.name|title }}"><i class="fa fa-share-square"></i></a>
                         </td>
                     </tr>
                     {% endfor %}
