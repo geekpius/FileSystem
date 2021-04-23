@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 from files.views import (FileCreateView, DepartmentGetView, ReceiverGetView, PendingFileListChangeStatusView, ReceivedFileListView, 
-                        SentFileListView, ArchiveFileListView)
+                        SentFileListView, ArchiveFileListView, ResendFileView)
 
 app_name = 'files'
 
@@ -11,6 +11,7 @@ urlpatterns = [
     path('view/pending', PendingFileListChangeStatusView.as_view(), name='view_pending'),
     path('view/received', ReceivedFileListView.as_view(), name='view_received'),
     path('view/sent', SentFileListView.as_view(), name='view_sent'),
+    path('view/sent/resend', ResendFileView.as_view(), name='view_sent_resent'),
 
     path('archives', ArchiveFileListView.as_view(), name='archives'),
 ]

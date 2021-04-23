@@ -52,7 +52,7 @@
                         </td>
                         <td class="text-center">
                             <a href="{{ file.file.url }}" class="text-primary mr-3" title="Download {{ file.name|title }}"><i class="fa fa-download"></i></a>
-                            <a href="#" class="text-primary resend" title="Resend {{ file.name|title }} to {{ file.receiver.name|title }}" data-id="{{ file.id }}"><i class="fa fa-share-square"></i></a>
+                            <a href="{% url 'files:view_sent_resent' %}" class="text-primary resend" title="Resend {{ file.name|title }} to {{ file.receiver.name|title }}" data-id="{{ file.id }}" data-token="{{ csrf_token }}" data-user="{{ user.id }}" data-status="1"><i class="fa fa-share-square"></i></a>
                         </td>
                     </tr>
                     {% endfor %}

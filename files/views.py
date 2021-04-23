@@ -6,7 +6,7 @@ from django.template import loader
 from django.db.models import Q
 from django.db import transaction
 
-from files.forms import FileCreateForm
+from files.forms import FileCreateForm, ArchiveCreateForm
 from files.models import File, ArchiveFile
 from zones.models import Zone, Department
 from accounts.models import User
@@ -110,9 +110,21 @@ class ArchiveFileListView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         ArchiveFile.objects.filter(file__user=request.user, is_read=False).update(is_read=True)
-        files = ArchiveFile.objects.filter(~Q(status=File.PENDING), Q(file__user=request.user) | Q(file__receiver=request.user))
+        files = ArchiveFile.objects.filter(Q(file__user=request.user) | Q(file__receiver=request.user))
         context = {
             "file_list": files
         }
         return render(request, self.template_name, context)
+
+
+class ResendFileView(LoginRequiredMixin, View):
+    form_class = ArchiveCreateForm
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({'message':'success'})
+            return JsonResponse({'message': form.errors})
+        return HttpResponse('Wrong request')
 
