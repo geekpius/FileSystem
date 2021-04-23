@@ -29,6 +29,7 @@ class ArchiveFile (models.Model):
     RESENT = 1
     REJECTED = 0
     ACCEPTED = 2
+    FORWARDED = 3
     file = models.ForeignKey(File, related_name="archive_files", on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_archive_files", on_delete=models.CASCADE)
     status = models.IntegerField(default=1)

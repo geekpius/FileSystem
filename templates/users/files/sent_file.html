@@ -52,7 +52,7 @@
                         </td>
                         <td class="text-center">
                             <a href="{{ file.file.url }}" class="text-primary mr-3" title="Download {{ file.name|title }}"><i class="fa fa-download"></i></a>
-                            <a href="#" class="text-primary" title="Resend {{ file.name|title }} to {{ file.receiver.name|title }}"><i class="fa fa-share-square"></i></a>
+                            <a href="#" class="text-primary resend" title="Resend {{ file.name|title }} to {{ file.receiver.name|title }}" data-id="{{ file.id }}"><i class="fa fa-share-square"></i></a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -68,5 +68,5 @@
 {% block scripts %}
 <script src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
 <script src="{% static 'assets/js/pages/datatables_basic.js' %}"></script>
-<script src="{% static 'assets/js/pages/files/files.js' %}"></script>
+<script src="{% static 'assets/js/pages/files/sent_files.js' %}"></script>
 {% endblock scripts %}
