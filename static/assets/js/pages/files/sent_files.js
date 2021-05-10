@@ -27,14 +27,26 @@ $(".datatable-basic tbody tr").on('click', '.resend', function(e){
             dataType: "json",
             success: function(resp){
                 if(resp.message==='success'){
-                    swal('Success','Resend successful', 'success');
+                    let inter = setInterval(function(){
+                        alert('Resend successful');
+                        clearInterval(inter);
+                    },100);
                 }else{
                     if(resp.message.user){
-                        swal('User', `${resp.message.user}`, 'warning');
+                        let inter = setInterval(function(){
+                            alert(resp.message.user);
+                            clearInterval(inter);
+                        },100);
                     }else if(resp.message.file){
-                        swal('File', `${resp.message.file}`, 'warning');
+                        let inter = setInterval(function(){
+                            alert(resp.message.file);
+                            clearInterval(inter);
+                        },100);
                     }else{
-                        swal('Error', `${resp.message}`, 'warning');
+                        let inter = setInterval(function(){
+                            alert(resp.message);
+                            clearInterval(inter);
+                        },100);
                     }
                 }
             },

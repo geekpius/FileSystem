@@ -66,7 +66,7 @@
 					</div>
 				</li>
 
-                <li class="nav-item dropdown">
+                <!-- <li class="nav-item dropdown">
 					<a href="#" class="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
 						<i class="icon-bubbles4"></i>
 						<span class="d-md-none ml-2">Messages</span>
@@ -121,20 +121,19 @@
 							<a href="#" class="bg-light text-grey w-100 py-2" data-popup="tooltip" title="Load more"><i class="icon-menu7 d-block top-0"></i></a>
 						</div>
 					</div>
-				</li>
+				</li> -->
 
 				<li class="nav-item dropdown dropdown-user">
 					<a href="#" class="navbar-nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown">
 						<img src="{% static request.user.user_image.get_user_image %}" class="rounded-circle mr-2" height="34" alt="">
 						<span>{{ request.user.name }}</span>
 					</a>
-
+					
 					<div class="dropdown-menu dropdown-menu-right">
 						<a href="#" class="dropdown-item"><i class="icon-user-plus"></i> My profile</a>
-						<a href="#" class="dropdown-item"><i class="icon-coins"></i> My balance</a>
-						<a href="#" class="dropdown-item"><i class="icon-comment-discussion"></i> Messages <span class="badge badge-pill bg-blue ml-auto">58</span></a>
+						<!-- <a href="#" class="dropdown-item"><i class="icon-comment-discussion"></i> Messages <span class="badge badge-pill bg-blue ml-auto">58</span></a> -->
 						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item"><i class="icon-cog5"></i> Account settings</a>
+						<a href="{% url 'accounts:change_password' %}" class="dropdown-item"><i class="icon-lock"></i> Change Password</a>
 						<a href="{% url 'accounts:logout'  %}" class="dropdown-item"><i class="icon-switch2"></i> Logout</a>
 					</div>
 				</li>

@@ -1,7 +1,7 @@
 from django.urls import path, re_path
 from accounts.views import (LoginView, LogoutView, ResetPasswordView, DashboardView, UserCreateView, UserListView, 
                             UserDeactivateView, UserDeleteView, UserDetailUpdateView, AccountTypeCreateView,
-                            AccountTypeDeactivateDeleteView, UserNotificationView, UserNotificationCount)
+                            AccountTypeDeactivateDeleteView, UserNotificationView, UserNotificationCount, ChangePasswordView)
 
 app_name = 'accounts'
 
@@ -20,4 +20,6 @@ urlpatterns = [
 
     path('users/notifications/counts', UserNotificationCount.as_view(), name='users_notifications_counts'),
     path('users/notifications', UserNotificationView.as_view(), name='users_notifications'),
+    
+    path('change-password', ChangePasswordView.as_view(), name="change_password"),
 ]

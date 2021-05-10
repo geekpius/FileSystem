@@ -63,3 +63,19 @@ class AccountTypeForm(forms.ModelForm):
     class Meta:
         model = AccountType
         fields = ['name', 'zone']
+
+
+class SetPasswordForm(forms.ModelForm):
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+    # password2 = forms.CharField(label='Password2', widget=forms.PasswordInput)
+
+    # def clean(self):
+    #     if 'password' in self.cleaned_data and 'password2' in self.cleaned_data:
+    #         if self.cleaned_data['password1'] != self.cleaned_data['password2']:
+    #             raise forms.ValidationError(_("The two password fields did not match."))
+    #     return self.cleaned_data 
+
+    class Meta:
+        model = User
+        fields = ["password"]
+

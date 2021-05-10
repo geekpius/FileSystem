@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth.forms import PasswordChangeForm
 from django.views import View
 from django.views.generic import ListView
 from django.template import loader
@@ -328,3 +329,24 @@ class UserNotificationView(LoginRequiredMixin, View):
             return HttpResponse(template.render(context, self.request))
         
         return HttpResponse('Wrong request')
+
+
+class ChangePasswordView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to" 
+    template_name = "users/accounts/change_password.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = PasswordChangeForm(request.user, request.POST)
+            if form.is_valid():
+                user = form.save()
+                update_session_auth_hash(request, user)  # Important! 
+                return JsonResponse({"message": "success"})
+            else:
+                return JsonResponse({"message": form.errors})
+        return HttpResponse('Wrong request')
+
