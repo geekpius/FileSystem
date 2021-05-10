@@ -123,11 +123,14 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
             type: "GET",
             dataType: "json",
             success: function(resp){
-                // alert(resp.message)
                 if(resp.message === 'success'){
-                    alert('yes');
+                    let inter = setInterval(function(){
+                        alert(`${$this.parents('.record').find('td').eq(1).text()} account is ${$this.data('status').toLowerCase()}d successful`);
+                        window.location.reload();
+                        clearInterval(inter);
+                    },100);
                 }else{
-                    alert('no');
+                    console.log("something went wrong");
                 }
                 // if(resp.message === 'success'){
                 //     swal({

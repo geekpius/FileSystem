@@ -222,8 +222,8 @@
 						</li>
 						{% endif %}
 						{% if request.user.account_type == 'super' or request.user.account_type == 'admin' %}
-						<li class="nav-item nav-item-submenu">
-							<a href="#" class="nav-link {% if request.path == user_url %}active{% endif %} {% if request.path == view_user_url %}active{% endif %}"><i class="icon-user-tie"></i> <span>Users</span></a>
+						<li class="nav-item nav-item-submenu {% if request.path == user_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == view_user_url %}nav-item-expanded nav-item-open{% endif %}">
+							<a href="#" class="nav-link"><i class="icon-user-tie"></i> <span>Users</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="Users">
 								<li class="nav-item"><a href="{% url 'accounts:users' %}" class="nav-link {% if request.path == user_url %}active{% endif %}">Add New</a></li>
 								<li class="nav-item"><a href="{% url 'accounts:users_view' %}" class="nav-link {% if request.path == view_user_url %}active{% endif %}">View Users</a></li>
@@ -251,8 +251,8 @@
 						</li>
 						{% endif %}
 
-						<li class="nav-item nav-item-submenu">
-							<a href="#" class="nav-link {% if request.path == files_url %}active{% endif %} {% if request.path == file_pending_url %}active{% endif %} {% if request.path == file_received_url %}active{% endif %} {% if request.path == file_sent_url %}active{% endif %}"><i class="icon-file-plus"></i> <span>Files</span></a>
+						<li class="nav-item nav-item-submenu {% if request.path == files_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_pending_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_received_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_sent_url %}nav-item-expanded nav-item-open{% endif %}">
+							<a href="#" class="nav-link"><i class="icon-file-plus"></i> <span>Files</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="Files">
 								<li class="nav-item"><a href="{% url 'files:create' %}" class="nav-link {% if request.path == files_url %}active{% endif %}">Create New</a></li>
 								<li class="nav-item"><a href="{% url 'files:view_pending' %}" class="nav-link {% if request.path == file_pending_url %}active{% endif %}">Pending Files</a></li>
