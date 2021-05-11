@@ -27,6 +27,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('zones/', include('zones.urls')),
     path('files/', include('files.urls')),
+    path('supports/', include('supports.urls')),
 ]
 
 if settings.DEBUG:

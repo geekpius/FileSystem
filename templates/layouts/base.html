@@ -200,6 +200,7 @@
                         {% url 'files:view_received' as file_received_url %}
                         {% url 'files:view_sent' as file_sent_url %}
                         {% url 'files:archives' as archives_url %}
+                        {% url 'supports:create' as create_url %}
 						<!-- Main -->
 						<li class="nav-item-header"><div class="text-uppercase font-size-xs line-height-xs">Main</div> <i class="icon-menu" title="Main"></i></li>
 						<li class="nav-item">
@@ -270,7 +271,7 @@
 						</li>
 
 						<li class="nav-item">
-							<a href="#" class="nav-link">
+							<a href="{% url 'supports:create' %}" class="nav-link {% if request.path == create_url %}active{% endif %}">
 								<i class="fa fa-life-ring"></i>
 								<span>
 									Support

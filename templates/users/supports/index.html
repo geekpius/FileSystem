@@ -1,0 +1,78 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Create support{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Support</span> - Create New</h4>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+
+    <!-- Main charts -->
+    <div class="row">
+        <div class="col-sm-12 col-lg-6 offset-lg-3">
+
+            <!-- Traffic sources -->
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h6 class="card-title">Create Support</h6>
+                    <div class="header-elements"></div>
+                </div>
+
+                <div class="card-body py-0">
+                    <form action="{% url 'supports:create' %}" id="formAdd">
+                        {% csrf_token %}
+                        <input type="hidden" name="user" readonly value="{{ request.user.id }}">
+                        <div class="form-group validate">
+                            <label>Support Type</label>
+                            <select name="type" class="form-control">
+                                <option value="">--Select--</option>
+                                <option value="account">Account</option>
+                                <option value="file">Files</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group validate">
+                            <label>Message</label>
+                            <input type="text" name="subject" class="form-control" placeholder="Enter subject">
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group validate">
+                            <label>Message</label>
+                            <textarea rows="5" name="message" class="form-control" placeholder="Write your problem"></textarea>
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group">
+                            <button type="submit" class="btn bg-primary btn-sm btnSubmit">Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i></button>
+                        </div> 
+                    </form>
+                </div>
+
+            </div>
+            <!-- /traffic sources -->
+
+        </div>
+    </div>
+    <!-- /main charts -->
+
+</div>
+<!-- /content area -->
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'assets/js/pages/supports/support.js' %}"></script>
+{% endblock scripts %}
