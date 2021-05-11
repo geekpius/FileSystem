@@ -79,3 +79,10 @@ class SetPasswordForm(forms.ModelForm):
         model = User
         fields = ["password"]
 
+
+class ProfileUpdateForm(forms.Form):
+    email = forms.EmailField(max_length=255)
+    name = forms.CharField(max_length=60)
+    gender = forms.CharField(max_length=10)
+    phone = forms.CharField(max_length=15)
+

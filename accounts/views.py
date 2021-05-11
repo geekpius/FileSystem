@@ -10,7 +10,7 @@ from django.template import loader
 from django.contrib import messages
 
 from accounts.forms import (LoginForm, RegisterUserForm, UserImageForm, RegisterAdminForm, 
-                            UserUpdateForm, AdminUpdateForm, AccountTypeForm)
+                            UserUpdateForm, AdminUpdateForm, AccountTypeForm, ProfileUpdateForm)
 from accounts.models import User, UserImage, AccountType
 from zones.models import Department
 from zones.models import Zone
@@ -73,6 +73,37 @@ class DashboardView(LoginRequiredMixin, View):
         context = {}
 
         return render(request, self.template_name, context)  
+
+class ProfileUpdateView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = 'users/accounts/profile.html'
+    form_class = ProfileUpdateForm
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+
+        return render(request, self.template_name, context)  
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data['email']
+                name = form.cleaned_data['name']
+                gender = form.cleaned_data['gender']
+                phone = form.cleaned_data['phone']
+                user = get_object_or_404(User, pk=request.user.id)
+                user.email = email
+                user.name = name
+                user.gender = gender
+                user.phone = phone
+                user.save()
+                return JsonResponse({'message':'success'})
+            return JsonResponse({'message':form.errors})
+
+        return HttpResponse('Wrong request')
+
 
 
 class UserCreateView(LoginRequiredMixin, View):

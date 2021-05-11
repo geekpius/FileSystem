@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from accounts.views import (LoginView, LogoutView, ResetPasswordView, DashboardView, UserCreateView, UserListView, 
+from accounts.views import (LoginView, LogoutView, ResetPasswordView, DashboardView, ProfileUpdateView, UserCreateView, UserListView, 
                             UserDeactivateView, UserDeleteView, UserDetailUpdateView, AccountTypeCreateView,
                             AccountTypeDeactivateDeleteView, UserNotificationView, UserNotificationCount, ChangePasswordView)
 
@@ -10,6 +10,7 @@ urlpatterns = [
     path('logout', LogoutView.as_view(), name='logout'),
     path('reset-password', ResetPasswordView.as_view(), name='reset_password'),
     path('dashboard', DashboardView.as_view(), name='dashboard'),
+    path('profile', ProfileUpdateView.as_view(), name='profile'),
     path('users', UserCreateView.as_view(), name='users'),
     path('users/types', AccountTypeCreateView.as_view(), name='users_types'),
     path('users/types/<int:id>', AccountTypeDeactivateDeleteView.as_view(), name='users_types_deactivate_delete'),

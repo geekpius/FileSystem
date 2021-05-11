@@ -1,10 +1,4 @@
 
-// $('.datatable-basic').DataTable();
-
-$(".btnAdd").on('click', function(){
-
-
-});
 
 $("#formUser").on("submit", function(e){
     e.stopPropagation();
@@ -304,3 +298,61 @@ function isNumber(evt) {
 }
   
 $("#formProfile select[name='zone']").val($("#formProfile select[name='zone']").data('selected'));
+
+
+
+$("#formUpdateProfile").on("submit", function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var $this = $(this);
+    var valid = true;
+    $('#formUpdateProfile input, #formUpdateProfile select').each(function() {
+        let $this = $(this);
+        
+        if(!$this.val()) {
+            valid = false;
+            $this.parents('.validate').find('.mySpan').text('The '+$this.attr('name').replace(/[\_]+/g, ' ')+' field is required');
+        }
+    });
+
+    if(valid){
+        $("#formUpdateProfile .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
+        let data = $this.serialize();
+        $.ajax({
+            url: $("#formUpdateProfile").attr("action"),
+            type: "POST",
+            dateType: "json",
+            data: data,
+            success: function(resp){
+                if(resp.message==='success'){
+                    swal({
+                        title: "Success",
+                        text: `Profile updated successful`,
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-sm text-primary",
+                        confirmButtonText: "Okay",
+                        },
+                    function(){
+                    });
+                }else{
+                    if(resp.message.email){
+                        swal('Error', `${resp.message.email}`, 'warning');
+                    }else if(resp.message.name){
+                        swal('Error', `${resp.message.name}`, 'warning');
+                    }else if(resp.message.phone){
+                        swal('Error', `${resp.message.phone}`, 'warning');
+                    }else if(resp.message.gender){
+                        swal('Error', `${resp.message.gender}`, 'warning');
+                    }
+                }
+                $("#formUpdateProfile .btnSubmit").html('Save Changes').attr('disabled',false);
+            },
+            error: function(resp){
+                console.log('something wrong with request')
+                $("#formUpdateProfile .btnSubmit").html('Save Changes').attr('disabled',false);
+            }
+        });
+    }
+    return false;
+});
