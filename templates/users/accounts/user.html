@@ -29,7 +29,7 @@
                     <h6 class="card-title">Add New {% if request.user.account_type == 'super' %}Admin{% else %}User{% endif %}</h6>
                     <div class="header-elements"></div>
                 </div>
-
+                
                 <div class="card-body py-0">
                     <form action="{% url 'accounts:users' %}" id="formUser">
                         {% csrf_token %}

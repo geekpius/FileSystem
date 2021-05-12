@@ -12,11 +12,11 @@ from django.contrib import messages
 from accounts.forms import (LoginForm, RegisterUserForm, UserImageForm, RegisterAdminForm, 
                             UserUpdateForm, AdminUpdateForm, AccountTypeForm, ProfileUpdateForm)
 from accounts.models import User, UserImage, AccountType
-from zones.models import Department
-from zones.models import Zone
-from files.models import File, ArchiveFile
+from zones.models import Department, Zone
+from files.models import File, ArchiveFile, ForwardFile
 from django.db.models import Q
 import os
+from django.core.mail import send_mail, EmailMessage
 
 
 class LoginView(View):
@@ -70,7 +70,43 @@ class DashboardView(LoginRequiredMixin, View):
     template_name = 'users/accounts/index.html'
 
     def get(self, request, *args, **kwargs):
-        context = {}
+        if request.user.account_type == User.SUPER:
+            count_zones = Zone.objects.count()
+            count_users = User.objects.count()
+            count_files = File.objects.count(),
+            count_archives = ArchiveFile.objects.count()
+            context = {
+                'count_zones': count_zones,
+                'count_users': count_users,
+                'count_files': count_files[0],
+                'count_archives': count_archives
+            }
+        elif request.user.account_type == User.ADMIN:
+            count_users = User.objects.filter(zone=request.user.zone).count()
+            count_departments = Department.objects.filter(zone=request.user.zone).count()
+            count_files = File.objects.filter(user__zone=request.user.zone).count(),
+            count_archives = ArchiveFile.objects.filter(user__zone=request.user.zone).count()
+            context = {
+                'count_users': count_users,
+                'count_departments': count_departments,
+                'count_files': count_files[0],
+                'count_archives': count_archives
+            }
+        else:
+            count_sent_files = File.objects.filter(user=request.user).count(),
+            count_rejected_files = File.objects.filter(user=request.user, status=File.REJECTED).count(),
+            count_pending_files = File.objects.filter(user=request.user, status=File.PENDING).count(),
+            count_accepted_files = File.objects.filter(user=request.user, status=File.ACCEPTED).count(),
+            count_forwarded_files = ForwardFile.objects.filter(user=request.user).count(),
+            count_archives = ArchiveFile.objects.filter(user=request.user).count()
+            context = {
+                'count_sent_files': count_sent_files[0],
+                'count_rejected_files': count_rejected_files[0],
+                'count_pending_files': count_pending_files[0],
+                'count_accepted_files': count_accepted_files[0],
+                'count_forwarded_files': count_forwarded_files[0],
+                'count_archives': count_archives
+            }
 
         return render(request, self.template_name, context)  
 
@@ -134,18 +170,36 @@ class UserCreateView(LoginRequiredMixin, View):
                 admin_form = self.form_class_admin(request.POST)
                 if admin_form.is_valid():
                     user = admin_form.save(commit=False)
+                    email = admin_form.cleaned_data['email']
                     password = admin_form.cleaned_data['password']
                     user.set_password(password)
                     user.save()
+                    url = f"https://{request.get_host}/accounts/login"
+                    send_mail(
+                        'Registration',
+                        f"Account has been created for you with password: {password}. Use this link {url} to login.",
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                    )
                     return JsonResponse({'message':'success'})
                 return JsonResponse({'message':admin_form.errors})
             else:
                 form = self.form_class(request.POST)
                 if form.is_valid():
                     user = form.save(commit=False)
+                    email = form.cleaned_data['email']
                     password = form.cleaned_data['password']
                     user.set_password(password)
                     user.save()
+                    url = 'http://127.0.0.1:8000/accounts/users'
+                    send_mail(
+                        'Registration',
+                        f"Account has been created for you with password: {password}. Use this link {url} to login.",
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                    )
                     return JsonResponse({'message':'success'})
                 return JsonResponse({'message':form.errors})
 

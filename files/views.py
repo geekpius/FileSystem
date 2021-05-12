@@ -128,10 +128,16 @@ class ArchiveFileListView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         ArchiveFile.objects.filter(file__user=request.user, is_read=False).update(is_read=True)
-        files = ArchiveFile.objects.filter(Q(file__user=request.user) | Q(file__receiver=request.user))
-        context = {
-            "file_list": files
-        }
+        if request.user.account_type == User.SUPER:
+            files = ArchiveFile.objects.all()
+            context = {
+                "file_list": files
+            }
+        else:
+            files = ArchiveFile.objects.filter(Q(file__user=request.user) | Q(file__receiver=request.user))
+            context = {
+                "file_list": files
+            }
         return render(request, self.template_name, context)
 
 
