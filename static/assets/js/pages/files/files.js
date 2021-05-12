@@ -59,7 +59,7 @@ $("#formFile").on("submit", function(e){
 });
 
 
-$("#formFile select[name='zone']").on("change", function(e){
+$("#formFile select[name='zone'], #formForward select[name='zone']").on("change", function(e){
     e.stopPropagation();
     e.preventDefault();
     var $this = $(this);
@@ -79,10 +79,10 @@ $("#formFile select[name='zone']").on("change", function(e){
                 resp.data.forEach(department => {
                     options+='<option value='+department.name+'>'+department.name +'</option>';
                 });
-                $("#formFile select[name='department']").find('.after').after(options);
+                $("#formFile select[name='department'], #formForward select[name='department']").find('.after').after(options);
             }
             else{
-                $("#formFile select[name='department']").find('.after').nextAll().remove();
+                $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
             }
         },
         error: function(resp){
@@ -90,7 +90,7 @@ $("#formFile select[name='zone']").on("change", function(e){
         }
     });
     }else{
-        $("#formFile select[name='department']").find('.after').nextAll().remove();
+        $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
     }
     return false;
 });
@@ -287,7 +287,112 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
 });
 
 
+$(".datatable-basic tbody tr").on('click', '.btnForward', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var $this = $(this);
+    $("#formForward input[name='file']").val($this.data('file'));
+    $("#forwardModal").modal('show');
+  return false;
+});
 
+$("#formForward select[name='department']").on("change", function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var $this = $(this);
+    if($("#formForward select[name='zone']").val() != '' && $this.val() != ''){
+        let data = {
+            csrfmiddlewaretoken: $this.data('token'),
+            zone: $("#formForward select[name='zone']").val(),
+            department: $this.val()
+        }
+        $.ajax({
+        url: $this.data('url'),
+        type: "POST",
+        dateType: "json",
+        data: data,
+        success: function(resp){
+            if(resp.message === 'success'){
+                let options = '';
+                resp.data.forEach(receiver => {
+                    options+=`<option value="${receiver.id}">${receiver.name} (${receiver.account_type.toUpperCase()})</option>`;
+                });
+                $("#formForward select[name='receiver']").find('.after').after(options);
+            }
+            else{
+                $("#formForward select[name='receiver']").find('.after').nextAll().remove();
+            }
+        },
+        error: function(resp){
+            console.log('something wrong with request')
+        }
+    });
+    }else{
+        $("#formForward select[name='receiver']").find('.after').nextAll().remove();
+    }
+    return false;
+});
+
+
+$("#formForward").on("submit", function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var $this = $(this);
+    var valid = true;
+    $('#formForward input, #formForward select').each(function() {
+        let $this = $(this);
+        
+        if(!$this.val()) {
+            valid = false;
+            $this.parents('.validate').find('.mySpan').text('The '+$this.attr('name').replace(/[\_]+/g, ' ')+' field is required');
+        }
+    });
+
+    if(valid){
+        $("#formForward .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Forwarding...').attr('disabled',true);
+        let data = $this.serialize();
+        $.ajax({
+            url: $("#formForward").attr("action"),
+            type: "POST",
+            dateType: "json",
+            data: data,
+            success: function(resp){
+                if(resp.message==='success'){
+                    swal({
+                        title: "Success",
+                        text: `Forwarded successful`,
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-sm text-primary",
+                        confirmButtonText: "Okay",
+                        },
+                    function(){
+                        $("#formForward")[0].reset();
+                        $("#forwardModal").modal('hide');
+                    });
+                }else{
+                    if(resp.message.file){
+                        swal('Error', `${resp.message.file}`, 'warning');
+                    }else if(resp.message.user){
+                        swal('Error', `${resp.message.user}`, 'warning');
+                    }else if(resp.message.receiver){
+                        swal('Error', `${resp.message.receiver}`, 'warning');
+                    }else if(resp.message.gender){
+                        swal('Error', `${resp.message.gender}`, 'warning');
+                    }else{
+                        swal('Error', `${resp.message}`, 'warning');
+                    }
+                }
+                $("#formForward .btnSubmit").html('Forward <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
+            },
+            error: function(resp){
+                console.log('something wrong with request')
+                $("#formForward .btnSubmit").html('Forward <i class="icon-paperplane ml-2"></i>').attr('disabled',false);
+            }
+        });
+    }
+    return false;
+});
 
 
 $("#formFile input, #formChange input").on('input', function(){
@@ -296,7 +401,7 @@ $("#formFile input, #formChange input").on('input', function(){
     }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
 });
 
-$("#formFile select, #formChange select").on('change', function(){
+$("#formFile select, #formChange select, #formForward select").on('change', function(){
     if($(this).val()!=''){
         $(this).parents('.validate').find('.mySpan').text('');
     }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }

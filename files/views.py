@@ -6,12 +6,14 @@ from django.template import loader
 from django.db.models import Q
 from django.db import transaction
 
-from files.forms import FileCreateForm, ArchiveCreateForm
-from files.models import File, ArchiveFile
+from files.forms import FileCreateForm, ArchiveCreateForm, ForwardCreateForm
+from files.models import File, ArchiveFile, ForwardFile
 from zones.models import Zone, Department
 from accounts.models import User
 
 class FileCreateView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
     form_class = FileCreateForm
     template_name = "users/files/index.html"
 
@@ -33,6 +35,8 @@ class FileCreateView(LoginRequiredMixin, View):
 
 
 class DepartmentGetView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
 
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -47,6 +51,8 @@ class DepartmentGetView(LoginRequiredMixin, View):
 
 
 class ReceiverGetView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
 
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -62,6 +68,8 @@ class ReceiverGetView(LoginRequiredMixin, View):
 
 
 class PendingFileListChangeStatusView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
     template_name = "users/files/pending_file.html"
 
     def get(self, request, *args, **kwargs):
@@ -84,17 +92,25 @@ class PendingFileListChangeStatusView(LoginRequiredMixin, View):
 
 
 class ReceivedFileListView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
     template_name = "users/files/receive_file.html"
 
     def get(self, request, *args, **kwargs):
         files = File.objects.filter(~Q(status=File.PENDING), receiver=request.user)
+        forwarded = ForwardFile.objects.filter(receiver=request.user)
+        zones = Zone.objects.all()
         context = {
-            "file_list": files
+            "file_list": files,
+            "forward_list": forwarded,
+            "zone_list": zones,
         }
         return render(request, self.template_name, context)
 
 
 class SentFileListView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
     template_name = "users/files/sent_file.html"
 
     def get(self, request, *args, **kwargs):
@@ -106,6 +122,8 @@ class SentFileListView(LoginRequiredMixin, View):
 
 
 class ArchiveFileListView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
     template_name = "users/files/archive_file.html"
 
     def get(self, request, *args, **kwargs):
@@ -118,6 +136,8 @@ class ArchiveFileListView(LoginRequiredMixin, View):
 
 
 class ResendFileView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
     form_class = ArchiveCreateForm
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
@@ -125,6 +145,35 @@ class ResendFileView(LoginRequiredMixin, View):
             if form.is_valid():
                 form.save()
                 return JsonResponse({'message':'success'})
+            return JsonResponse({'message': form.errors})
+        return HttpResponse('Wrong request')
+
+
+class ForwardFileView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = "users/files/forward_file.html"
+    form_class = ForwardCreateForm
+
+    def get(self, request, *args, **kwargs):
+        files = ForwardFile.objects.filter(user=request.user)
+        context = {
+            "file_list": files
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST)
+            if form.is_valid():
+                form.save(commit=False)
+                file = form.cleaned_data['file']
+                receiver = form.cleaned_data['receiver']
+                if ForwardFile.objects.filter(file=file, receiver=receiver).exists():
+                    return JsonResponse({'message':'File already forwarded to this receiver'})
+                else:
+                    form.save()
+                    return JsonResponse({'message':'success'})
             return JsonResponse({'message': form.errors})
         return HttpResponse('Wrong request')
 

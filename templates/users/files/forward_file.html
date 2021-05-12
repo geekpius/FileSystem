@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}View forward files{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">File</span> - View Forward Files</h4>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+
+    <div class="card">
+        
+        <div class="card-body table-responsive">
+            <table class="table datatable-basic">
+                <thead>
+                    <tr class="text-primary">
+                        <th>Created At</th>
+                        <th>Receiver</th>  
+                        <th>File Name</th>
+                        <th>File Type</th>
+                        <!-- <th>Status</th> -->
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for forward in file_list %}
+                    <tr class="record">
+                        <td>{{ forward.created_at }}</td> 
+                        <td>{{ forward.receiver.name|title }}</td>  
+                        <td>{{ forward.file.name|title }}</td>
+                        <td>{{ forward.file.type|upper }}</td>
+                        <!-- <td>
+                            {% if forward.status == forward.PENDING %}
+                            <span class="badge badge-primary">PENDING</span>
+                            {% elif forward.status == forward.ACCEPTED %}
+                            <span class="badge badge-success">ACCEPTED</span>
+                            {% elif forward.status == forward.REJECTED %}
+                            <span class="badge badge-danger">REJECTED</span>
+                            {% endif %}
+                        </td> -->
+                        <td class="text-center">
+                            <a href="{{ forward.file.file.url }}" class="text-primary mr-2" title="Download {{ forward.file.name|title }}"><i class="fa fa-download"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<!-- /content area -->
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'assets/js/plugins/tables/datatables/datatables.min.js' %}"></script>
+<script src="{% static 'assets/js/pages/datatables_basic.js' %}"></script>
+<script src="{% static 'assets/js/pages/files/files.js' %}"></script>
+{% endblock scripts %}

@@ -1,5 +1,5 @@
 from django import forms
-from files.models import File, ArchiveFile
+from files.models import File, ArchiveFile, ForwardFile
 
 class FileCreateForm(forms.ModelForm):
 
@@ -13,3 +13,10 @@ class ArchiveCreateForm(forms.ModelForm):
     class Meta:
         model = ArchiveFile
         fields = ['file', 'user', 'status']
+
+
+class ForwardCreateForm(forms.ModelForm):
+
+    class Meta:
+        model = ForwardFile
+        fields = ['file', 'user', 'receiver']

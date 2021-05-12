@@ -74,6 +74,7 @@ class DashboardView(LoginRequiredMixin, View):
 
         return render(request, self.template_name, context)  
 
+
 class ProfileUpdateView(LoginRequiredMixin, View):
     login_url = "accounts:login"
     redirect_field_name = "redirect_to"
@@ -103,7 +104,6 @@ class ProfileUpdateView(LoginRequiredMixin, View):
             return JsonResponse({'message':form.errors})
 
         return HttpResponse('Wrong request')
-
 
 
 class UserCreateView(LoginRequiredMixin, View):

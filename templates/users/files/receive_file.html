@@ -52,7 +52,28 @@
                         </td>
                         <td class="text-center">
                             <a href="{{ file.file.url }}" class="text-primary mr-3" title="Download {{ file.name|title }}"><i class="fa fa-download"></i></a>
-                            <a href="#" class="text-purple" title="Forward {{ file.name|title }}"><i class="fa fa-share"></i></a>
+                            <a href="#" class="text-purple btnForward" data-file="{{ file.id }}" title="Forward {{ file.name|title }}"><i class="fa fa-share"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for file in forward_list %}
+                    <tr class="record">
+                        <td>{{ file.created_at }}</td>
+                        <td>{{ file.user.name|title }}</td>  
+                        <td>{{ file.file.name|title }}</td>
+                        <td>{{ file.file.type|upper }}</td>
+                        <td>
+                            <span class="badge badge-success">FORWARDED TO ARCHIVE</span>
+                            <!-- {% if file.status == file.PENDING %}
+                            <span class="badge badge-primary">PENDING</span>
+                            {% elif file.status == file.ACCEPTED %}
+                            <span class="badge badge-success">ACCEPTED TO ARCHIVE</span>
+                            {% elif file.status == file.REJECTED %}
+                            <span class="badge badge-danger">REJECTED TO SENDER</span>
+                            {% endif %} -->
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ file.file.file.url }}" class="text-primary mr-3" title="Download {{ file.file.name|title }}"><i class="fa fa-download"></i></a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -61,6 +82,58 @@
         </div>
     </div>
 
+
+     <!-- Vertical form modal -->
+     <div id="forwardModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Forward File</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <form action="{% url 'files:view_forward' %}" id="formForward">
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        <input type="hidden" readonly name="file">
+                        <input type="hidden" readonly name="user" value="{{ request.user.id }}">
+                        <div class="form-group validate">
+                            <label>Zone</label>
+                            <select name="zone" class="form-control" data-url="{% url 'files:department_get' %}" data-token="{{ csrf_token }}">
+                                <option value="">--Select--</option>
+                                {% for zone in zone_list %}
+                                <option value="{{ zone.name }}">{{ zone.name|title }}</option>
+                                {% endfor %}
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        <div class="form-group validate">
+                            <label>Department</label>
+                            <select name="department" class="form-control" data-url="{% url 'files:receiver_get' %}" data-token="{{ csrf_token }}">
+                                <option value="" class="after">--Select--</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group validate">
+                            <label>Receiver</label>
+                            <select name="receiver" class="form-control">
+                                <option value="" class="after">--Select--</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link text-danger" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-primary btn-sm btnSubmit">Forward <i class="icon-paperplane ml-2"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- /vertical form modal -->
 
 </div>
 <!-- /content area -->

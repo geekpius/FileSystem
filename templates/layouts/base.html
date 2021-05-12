@@ -199,6 +199,7 @@
                         {% url 'files:view_pending' as file_pending_url %}
                         {% url 'files:view_received' as file_received_url %}
                         {% url 'files:view_sent' as file_sent_url %}
+                        {% url 'files:view_forward' as file_forward_url %}
                         {% url 'files:archives' as archives_url %}
                         {% url 'supports:create' as create_url %}
 						<!-- Main -->
@@ -251,12 +252,13 @@
 						</li>
 						{% endif %}
 
-						<li class="nav-item nav-item-submenu {% if request.path == files_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_pending_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_received_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_sent_url %}nav-item-expanded nav-item-open{% endif %}">
+						<li class="nav-item nav-item-submenu {% if request.path == files_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_pending_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_received_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_forward_url %}nav-item-expanded nav-item-open{% endif %} {% if request.path == file_sent_url %}nav-item-expanded nav-item-open{% endif %}">
 							<a href="#" class="nav-link"><i class="icon-file-plus"></i> <span>Files</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="Files">
 								<li class="nav-item"><a href="{% url 'files:create' %}" class="nav-link {% if request.path == files_url %}active{% endif %}">Create New</a></li>
 								<li class="nav-item"><a href="{% url 'files:view_pending' %}" class="nav-link {% if request.path == file_pending_url %}active{% endif %}">Pending Files</a></li>
 								<li class="nav-item"><a href="{% url 'files:view_received' %}" class="nav-link {% if request.path == file_received_url %}active{% endif %}">Received Files</a></li>
+								<li class="nav-item"><a href="{% url 'files:view_forward' %}" class="nav-link {% if request.path == file_forward_url %}active{% endif %}">Forwarded Files</a></li>
 								<li class="nav-item"><a href="{% url 'files:view_sent' %}" class="nav-link {% if request.path == file_sent_url %}active{% endif %}">Sent Files</a></li>
 							</ul>
 						</li>

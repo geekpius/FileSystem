@@ -59,6 +59,29 @@
                         </td>
                     </tr>
                     {% endfor %}
+                    {% for archive in file_list %}
+                    <tr class="record">
+                        <td>{{ archive.created_at }}</td>
+                        <td>{{ archive.file.user.name|title }}</td>  
+                        <td>{{ archive.file.receiver.name|title }}</td>  
+                        <td>{{ archive.file.name|title }}</td>
+                        <td>{{ archive.file.type|upper }}</td>
+                        <td>
+                            {% if archive.status == archive.RESENT %}
+                            <span class="badge badge-primary">RESENT</span>
+                            {% elif archive.status == archive.ACCEPTED %}
+                            <span class="badge badge-success">ACCEPTED</span>
+                            {% elif archive.status == archive.REJECTED %}
+                            <span class="badge badge-danger">REJECTED</span>
+                            {% elif archive.status == archive.FORWARDED %}
+                            <span class="badge badge-warning">FORWARDED</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ archive.file.file.url }}" class="text-primary mr-2" title="Download {{ archive.file.name|title }}"><i class="fa fa-download"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
