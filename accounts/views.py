@@ -1,3 +1,4 @@
+import json
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME, update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -444,5 +445,19 @@ class ChangePasswordView(LoginRequiredMixin, View):
                 return JsonResponse({"message": "success"})
             else:
                 return JsonResponse({"message": form.errors})
+        return HttpResponse('Wrong request')
+
+
+class ResetPasswordView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to" 
+
+    def get(self, request, id, *args, **kwargs):
+        if request.is_ajax():
+            user = get_object_or_404(User, pk=id)
+            user.set_password('123456')
+            user.save()
+            return JsonResponse({'message':'success'})
+            
         return HttpResponse('Wrong request')
 

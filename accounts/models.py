@@ -100,6 +100,14 @@ class User(AbstractBaseUser):
             return 'Deactivate'
         return 'Activate'
 
+    @property
+    def get_pending_files(self):
+        return self.files.filter(status=1).count()
+
+    @property
+    def get_rejected_files(self):
+        return self.files.filter(status=0).count()
+
 
 class UserImage (models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name="user_image", on_delete=models.CASCADE)

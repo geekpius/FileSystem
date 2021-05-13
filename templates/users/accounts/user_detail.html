@@ -47,88 +47,6 @@
                 <!-- /navigation -->
 
 
-                <!-- Latest updates -->
-                <div class="card">
-                    <div class="card-header bg-transparent header-elements-inline">
-                        <span class="card-title font-weight-semibold">Latest updates</span>
-                        <div class="header-elements">
-                            <div class="list-icons">
-                                <a class="list-icons-item" data-action="collapse"></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <ul class="media-list">
-                            <li class="media">
-                                <div class="mr-3">
-                                    <a href="#" class="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon">
-                                        <i class="icon-git-pull-request"></i>
-                                    </a>
-                                </div>
-
-                                <div class="media-body">
-                                    Drop the IE <a href="#">specific hacks</a> for temporal inputs
-                                    <div class="text-muted font-size-sm">4 minutes ago</div>
-                                </div>
-                            </li>
-
-                            <li class="media">
-                                <div class="mr-3">
-                                    <a href="#" class="btn bg-transparent border-warning text-warning rounded-round border-2 btn-icon">
-                                        <i class="icon-git-commit"></i>
-                                    </a>
-                                </div>
-                                
-                                <div class="media-body">
-                                    Add full font overrides for popovers and tooltips
-                                    <div class="text-muted font-size-sm">36 minutes ago</div>
-                                </div>
-                            </li>
-
-                            <li class="media">
-                                <div class="mr-3">
-                                    <a href="#" class="btn bg-transparent border-info text-info rounded-round border-2 btn-icon">
-                                        <i class="icon-git-branch"></i>
-                                    </a>
-                                </div>
-                                
-                                <div class="media-body">
-                                    <a href="#">Chris Arney</a> created a new <span class="font-weight-semibold">Design</span> branch
-                                    <div class="text-muted font-size-sm">2 hours ago</div>
-                                </div>
-                            </li>
-
-                            <li class="media">
-                                <div class="mr-3">
-                                    <a href="#" class="btn bg-transparent border-success text-success rounded-round border-2 btn-icon">
-                                        <i class="icon-git-merge"></i>
-                                    </a>
-                                </div>
-                                
-                                <div class="media-body">
-                                    <a href="#">Eugene Kopyov</a> merged <span class="font-weight-semibold">Master</span> and <span class="font-weight-semibold">Dev</span> branches
-                                    <div class="text-muted font-size-sm">Dec 18, 18:36</div>
-                                </div>
-                            </li>
-
-                            <li class="media">
-                                <div class="mr-3">
-                                    <a href="#" class="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon">
-                                        <i class="icon-git-pull-request"></i>
-                                    </a>
-                                </div>
-                                
-                                <div class="media-body">
-                                    Have Carousel ignore keyboard events
-                                    <div class="text-muted font-size-sm">Dec 12, 05:46</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- /latest updates -->
-
             </div>
             <!-- /sidebar content -->
 
@@ -148,7 +66,7 @@
                         <div class="card bg-teal-400">
                             <div class="card-body">
                                 <div class="d-flex">
-                                    <h3 class="font-weight-semibold mb-0">3,450</h3>
+                                    <h3 class="font-weight-semibold mb-0">{{ user.files.count }}</h3>
                                     <div class="list-icons ml-auto">
                                         <a class="list-icons-item" data-action="reload"></a>
                                     </div>
@@ -156,12 +74,7 @@
                                 
                                 <div>
                                     Sent Files
-                                    <div class="font-size-sm opacity-75">489 avg</div>
                                 </div>
-                            </div>
-
-                            <div class="container-fluid">
-                                <div id="members-online"></div>
                             </div>
                         </div>
                         <!-- /Sent File online -->
@@ -174,7 +87,7 @@
                         <div class="card bg-pink-400">
                             <div class="card-body">
                                 <div class="d-flex">
-                                    <h3 class="font-weight-semibold mb-0">49</h3>
+                                    <h3 class="font-weight-semibold mb-0">{{ user.get_rejected_files }}</h3>
                                     <div class="list-icons ml-auto">
                                         <a class="list-icons-item" data-action="reload"></a>
                                     </div>
@@ -182,11 +95,8 @@
                                 
                                 <div>
                                     Rejected Files
-                                    <div class="font-size-sm opacity-75">34.6 avg</div>
                                 </div>
                             </div>
-
-                            <div id="server-load"></div>
                         </div>
                         <!-- /current server load -->
 
@@ -198,7 +108,7 @@
                         <div class="card bg-blue-400">
                             <div class="card-body">
                                 <div class="d-flex">
-                                    <h3 class="font-weight-semibold mb-0">18,390</h3>
+                                    <h3 class="font-weight-semibold mb-0">{{ user.get_pending_files }}</h3>
                                     <div class="list-icons ml-auto">
                                         <a class="list-icons-item" data-action="reload"></a>
                                     </div>
@@ -206,11 +116,8 @@
                                 
                                 <div>
                                     Pending Files
-                                    <div class="font-size-sm opacity-75">37,578 avg</div>
                                 </div>
                             </div>
-
-                            <div id="today-revenue"></div>
                         </div>
                         <!-- /today's revenue -->
 
@@ -221,7 +128,7 @@
                         <div class="card bg-purple-400">
                             <div class="card-body">
                                 <div class="d-flex">
-                                    <h3 class="font-weight-semibold mb-0">18,390</h3>
+                                    <h3 class="font-weight-semibold mb-0">{{ user.user_archive_files.count }}</h3>
                                     <div class="list-icons ml-auto">
                                         <a class="list-icons-item" data-action="reload"></a>
                                     </div>
@@ -229,11 +136,8 @@
                                 
                                 <div>
                                     Archived Files
-                                    <div class="font-size-sm opacity-75">37,578 avg</div>
                                 </div>
                             </div>
-
-                            <div id="today-revenue"></div>
                         </div>
                         <!-- /today's revenue -->
 
@@ -331,57 +235,6 @@
                 </div>
                 <!-- /profile info -->
 
-
-                <!-- Password settings -->
-                <div class="card">
-                    <div class="card-header header-elements-inline">
-                        <h5 class="card-title">Reset Password</h5>
-                        <div class="header-elements">
-                            <div class="list-icons">
-                                <a class="list-icons-item" data-action="collapse"></a>
-                                <a class="list-icons-item" data-action="reload"></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <form action="#">
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>Email</label>
-                                        <input type="email" value="{{ user.email }}" readonly="readonly" class="form-control">
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label>Current password</label>
-                                        <input type="password" value="******************************" readonly="readonly" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label>New password</label>
-                                        <input type="password" placeholder="Enter new password" class="form-control">
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label>Repeat password</label>
-                                        <input type="password" placeholder="Repeat new password" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="text-right">
-                                <button type="submit" class="btn btn-primary">Save changes</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <!-- /account settings -->
-
                 <!-- Account settings -->
                 <div class="card">
                     <div class="card-header header-elements-inline">
@@ -395,7 +248,31 @@
                     </div>
 
                     <div class="card-body">
-                        
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <table class="table">
+                                    <tr>
+                                        <td>Reset Password</td>
+                                        <td><input type="checkbox" name="reset" id="passwordReset" data-url="{% url 'accounts:reset_password' user.id %}"></td>
+                                    </tr>
+                                </table>
+                               
+                            </div>
+                            <div class="col-sm-6">
+                                <!-- <form action="" id="">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-12 validate">
+                                                <label>Email</label>
+                                                <input type="email" name="email" value="{{ user.email }}" class="form-control">
+                                                <span class="text-danger mySpan"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>  -->
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /account settings -->
@@ -412,5 +289,5 @@
 {% endblock content %}
 
 {% block scripts %}
-<script src="{% static 'assets/js/pages/users.js' %}"></script>
+<script src="{% static 'assets/js/pages/accounts/users.js' %}"></script>
 {% endblock scripts %}

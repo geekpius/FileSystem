@@ -344,6 +344,8 @@ $("#formUpdateProfile").on("submit", function(e){
                         swal('Error', `${resp.message.phone}`, 'warning');
                     }else if(resp.message.gender){
                         swal('Error', `${resp.message.gender}`, 'warning');
+                    }else{
+                        swal('Error', `${resp.message}`, 'warning');
                     }
                 }
                 $("#formUpdateProfile .btnSubmit").html('Save Changes').attr('disabled',false);
@@ -355,4 +357,40 @@ $("#formUpdateProfile").on("submit", function(e){
         });
     }
     return false;
+});
+
+
+function sendRequest(url){
+    $.ajax({
+        url: url,
+        type: "GET",
+        dateType: "json",
+        success: function(resp){
+            if(resp.message==='success'){
+                swal({
+                    title: "Success",
+                    text: `Action performed successful`,
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonClass: "btn-sm text-primary",
+                    confirmButtonText: "Okay",
+                    },
+                function(){
+                    window.location.reload();
+                });
+            }else{
+                swal('Error', `${resp.message}`, 'warning');
+            }
+        },
+        error: function(resp){
+            console.log('something wrong with request')
+        }
+    });
+}
+
+$("#passwordReset").on('change', function(){
+    var $this= $(this);
+    if($this.is(':checked')){
+        sendRequest($this.data('url'));
+    }
 });
