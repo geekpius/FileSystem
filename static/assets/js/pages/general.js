@@ -71,6 +71,6 @@ getNotification();
 setInterval(function(){
     getNotificationCount();
     getNotification();
-    getMessages();
+    // getMessages();
     processRequest();
 }, 10000);

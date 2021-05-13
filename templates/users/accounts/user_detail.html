@@ -42,6 +42,7 @@
 
                         <h6 class="font-weight-semibold mb-0">{{ user.name|title }}</h6>
                         <span class="d-block opacity-75">{{ user.account_type|title }}</span>
+                        <span class="d-block opacity-75">{% if user.is_active %}<i class="fa fa-circle text-success" style="font-size: 10px;"></i> Active {% else %}<i class="fa fa-circle" style="font-size: 10px;"></i> Not Active {% endif %}</span>
                     </div>
                 </div>
                 <!-- /navigation -->
