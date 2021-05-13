@@ -325,75 +325,34 @@
     </div>
     {% endif %}
     <!-- /quick stats boxes -->
-    
-    <!-- Main charts -->
+
+
+
+    <!-- Column chart -->
     <div class="row">
         <div class="col-xl-12">
-
-            <!-- Traffic sources -->
             <div class="card">
                 <div class="card-header header-elements-inline">
-                    <h6 class="card-title">Traffic sources</h6>
+                    <h5 class="card-title">{% now "Y" %} Files Chart </h5>
                     <div class="header-elements">
-                        <div class="form-check form-check-right form-check-switchery form-check-switchery-sm">
-                            <label class="form-check-label">
-                                Live update:
-                                <input type="checkbox" class="form-input-switchery" checked data-fouc>
-                            </label>
+                        <div class="list-icons">
+                            <a class="list-icons-item" data-action="collapse"></a>
+                            <a class="list-icons-item" data-action="reload"></a>
+                            <a class="list-icons-item" data-action="remove"></a>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-body py-0">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            <div class="d-flex align-items-center justify-content-center mb-2">
-                                <a href="#" class="btn bg-transparent border-teal text-teal rounded-round border-2 btn-icon mr-3">
-                                    <i class="icon-plus3"></i>
-                                </a>
-                                <div>
-                                    <div class="font-weight-semibold">New visitors</div>
-                                    <span class="text-muted">2,349 avg</span>
-                                </div>
-                            </div>
-                            <div class="w-75 mx-auto mb-3" id="new-visitors"></div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="d-flex align-items-center justify-content-center mb-2">
-                                <a href="#" class="btn bg-transparent border-warning-400 text-warning-400 rounded-round border-2 btn-icon mr-3">
-                                    <i class="icon-watch2"></i>
-                                </a>
-                                <div>
-                                    <div class="font-weight-semibold">New sessions</div>
-                                    <span class="text-muted">08:20 avg</span>
-                                </div>
-                            </div>
-                            <div class="w-75 mx-auto mb-3" id="new-sessions"></div>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <div class="d-flex align-items-center justify-content-center mb-2">
-                                <a href="#" class="btn bg-transparent border-indigo-400 text-indigo-400 rounded-round border-2 btn-icon mr-3">
-                                    <i class="icon-people"></i>
-                                </a>
-                                <div>
-                                    <div class="font-weight-semibold">Total online</div>
-                                    <span class="text-muted"><span class="badge badge-mark border-success mr-2"></span> 5,378 avg</span>
-                                </div>
-                            </div>
-                            <div class="w-75 mx-auto mb-3" id="total-online"></div>
-                        </div>
+                <div class="card-body">
+                    
+                    <div class="chart-container">
+                        <div class="chart" id="google-column"></div>
                     </div>
                 </div>
-
-                <div class="chart position-relative" id="traffic-sources"></div>
             </div>
-            <!-- /traffic sources -->
-
         </div>
     </div>
-    <!-- /main charts -->
+    <!-- /column chart -->
 
 </div>
 <!-- /content area -->
@@ -401,12 +360,126 @@
 
 {% block scripts %}
 <!-- Theme JS files -->
-<script src="{% static 'assets/js/plugins/visualization/d3/d3.min.js' %}"></script>
-<script src="{% static 'assets/js/plugins/visualization/d3/d3_tooltip.js' %}"></script>
-<script src="{% static 'assets/js/plugins/forms/styling/switchery.min.js' %}"></script>
-<script src="{% static 'assets/js/plugins/forms/selects/bootstrap_multiselect.js' %}"></script>
-<script src="{% static 'assets/js/plugins/ui/moment/moment.min.js' %}"></script>
-<script src="{% static 'assets/js/plugins/pickers/daterangepicker.js' %}"></script>
 
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="{% static 'assets/js/pages/accounts/dashboard.js' %}"></script>
+<script>
+    {% if monthly %}
+    var GoogleColumnBasic = function() {
+
+
+        //
+        // Setup module components
+        //
+    
+        // Column chart
+        var _googleColumnBasic = function() {
+            if (typeof google == 'undefined') {
+                console.warn('Warning - Google Charts library is not loaded.');
+                return;
+            }
+    
+            // Initialize chart
+            google.charts.load('current', {
+                callback: function () {
+    
+                    // Draw chart
+                    drawColumn();
+    
+                    // Resize on sidebar width change
+                    $(document).on('click', '.sidebar-control', drawColumn);
+    
+                    // Resize on window resize
+                    var resizeColumn;
+                    $(window).on('resize', function() {
+                        clearTimeout(resizeColumn);
+                        resizeColumn = setTimeout(function () {
+                            drawColumn();
+                        }, 200);
+                    });
+                },
+                packages: ['corechart']
+            });
+    
+            // Chart settings
+            function drawColumn() {
+    
+                // Define charts element
+                var line_chart_element = document.getElementById('google-column');
+    
+                var listMonths = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                // Data
+                var data = google.visualization.arrayToDataTable([
+                    ['Months', 'Files'],
+                    {% for field, value in monthly %}
+                    [listMonths[{{field}}], {{ value }}],
+                    {% endfor %}
+                    
+                ]);
+    
+    
+                // Options
+                var options_column = {
+                    fontName: 'Roboto',
+                    height: 400,
+                    fontSize: 12,
+                    chartArea: {
+                        left: '5%',
+                        width: '94%',
+                        height: 350
+                    },
+                    tooltip: {
+                        textStyle: {
+                            fontName: 'Roboto',
+                            fontSize: 13
+                        }
+                    },
+                    vAxis: {
+                        title: 'Sales and Expenses',
+                        titleTextStyle: {
+                            fontSize: 13,
+                            italic: false
+                        },
+                        gridlines:{
+                            color: '#e5e5e5',
+                            count: 10
+                        },
+                        minValue: 0
+                    },
+                    legend: {
+                        position: 'top',
+                        alignment: 'center',
+                        textStyle: {
+                            fontSize: 12
+                        }
+                    }
+                };
+    
+                // Draw chart
+                var column = new google.visualization.ColumnChart(line_chart_element);
+                column.draw(data, options_column);
+            }
+        };
+    
+    
+        //
+        // Return objects assigned to module
+        //
+    
+        return {
+            init: function() {
+                _googleColumnBasic();
+            }
+        }
+    }();
+    
+    
+    // Initialize module
+    // ------------------------------
+    
+    GoogleColumnBasic.init();
+    {% endif %}
+
+    
+</script>
 {% endblock scripts %}

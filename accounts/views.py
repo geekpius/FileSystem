@@ -14,9 +14,10 @@ from accounts.forms import (LoginForm, RegisterUserForm, UserImageForm, Register
 from accounts.models import User, UserImage, AccountType
 from zones.models import Department, Zone
 from files.models import File, ArchiveFile, ForwardFile
-from django.db.models import Q
+from django.db.models import Q, Count
 import os
 from django.core.mail import send_mail, EmailMessage
+from datetime import date, timedelta,  datetime
 
 
 class LoginView(View):
@@ -70,27 +71,34 @@ class DashboardView(LoginRequiredMixin, View):
     template_name = 'users/accounts/index.html'
 
     def get(self, request, *args, **kwargs):
+        cur_year = date.today().year
         if request.user.account_type == User.SUPER:
             count_zones = Zone.objects.count()
             count_users = User.objects.count()
             count_files = File.objects.count(),
             count_archives = ArchiveFile.objects.count()
+            monthly = File.objects.filter(created_at__year = str(cur_year)).values_list('created_at__month').annotate(
+                                            total=Count('pk'))
             context = {
                 'count_zones': count_zones,
                 'count_users': count_users,
                 'count_files': count_files[0],
-                'count_archives': count_archives
+                'count_archives': count_archives,
+                'monthly': monthly
             }
         elif request.user.account_type == User.ADMIN:
             count_users = User.objects.filter(zone=request.user.zone).count()
             count_departments = Department.objects.filter(zone=request.user.zone).count()
             count_files = File.objects.filter(user__zone=request.user.zone).count(),
             count_archives = ArchiveFile.objects.filter(user__zone=request.user.zone).count()
+            monthly = File.objects.filter(user__zone=request.user.zone, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
+                                            total=Count('pk'))
             context = {
                 'count_users': count_users,
                 'count_departments': count_departments,
                 'count_files': count_files[0],
-                'count_archives': count_archives
+                'count_archives': count_archives,
+                'monthly': monthly
             }
         else:
             count_sent_files = File.objects.filter(user=request.user).count(),
@@ -99,13 +107,16 @@ class DashboardView(LoginRequiredMixin, View):
             count_accepted_files = File.objects.filter(user=request.user, status=File.ACCEPTED).count(),
             count_forwarded_files = ForwardFile.objects.filter(user=request.user).count(),
             count_archives = ArchiveFile.objects.filter(user=request.user).count()
+            monthly = File.objects.filter(user=request.user, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
+                                            total=Count('pk'))
             context = {
                 'count_sent_files': count_sent_files[0],
                 'count_rejected_files': count_rejected_files[0],
                 'count_pending_files': count_pending_files[0],
                 'count_accepted_files': count_accepted_files[0],
                 'count_forwarded_files': count_forwarded_files[0],
-                'count_archives': count_archives
+                'count_archives': count_archives,
+                'monthly': monthly
             }
 
         return render(request, self.template_name, context)  
