@@ -298,6 +298,7 @@ function isNumber(evt) {
 }
   
 $("#formProfile select[name='zone']").val($("#formProfile select[name='zone']").data('selected'));
+$("#formProfile select[name='department']").val($("#formProfile select[name='department']").data('selected'));
 
 
 
@@ -361,6 +362,7 @@ $("#formUpdateProfile").on("submit", function(e){
 
 
 function sendRequest(url){
+    $('.resetText').text('Please wait......');
     $.ajax({
         url: url,
         type: "GET",
@@ -380,10 +382,12 @@ function sendRequest(url){
                 });
             }else{
                 swal('Error', `${resp.message}`, 'warning');
+                $('.resetText').text('');
             }
         },
         error: function(resp){
             console.log('something wrong with request')
+            $('.resetText').text('');
         }
     });
 }

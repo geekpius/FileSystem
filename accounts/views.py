@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout, REDIRECT_FIELD_NAME
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views import View
 from django.views.generic import ListView
@@ -186,7 +187,7 @@ class UserCreateView(LoginRequiredMixin, View):
                     password = admin_form.cleaned_data['password']
                     user.set_password(password)
                     user.save()
-                    url = f"https://{request.get_host}/accounts/login"
+                    url = request.build_absolute_uri(reverse('accounts:login'))
                     send_mail(
                         'Registration',
                         f"Account has been created for you with password: {password}. Use this link {url} to login.",
@@ -204,7 +205,7 @@ class UserCreateView(LoginRequiredMixin, View):
                     password = form.cleaned_data['password']
                     user.set_password(password)
                     user.save()
-                    url = 'http://127.0.0.1:8000/accounts/users'
+                    url = request.build_absolute_uri(reverse('accounts:login'))
                     send_mail(
                         'Registration',
                         f"Account has been created for you with password: {password}. Use this link {url} to login.",
@@ -326,9 +327,11 @@ class UserDetailUpdateView(LoginRequiredMixin, View):
     def get(self, request, id, *args, **kwargs):
         user = get_object_or_404(User, pk=id)
         zones = Zone.objects.filter(~Q(name='head'), is_active=True)
+        departments = Department.objects.filter(~Q(name='head'), zone=request.user.zone, is_active=True)
         context = {
             'user': user,
-            'zone_list': zones
+            'zone_list': zones,
+            'department_list': departments
         }
         return render(request, self.template_name, context)
     
@@ -457,6 +460,14 @@ class ResetPasswordView(LoginRequiredMixin, View):
             user = get_object_or_404(User, pk=id)
             user.set_password('123456')
             user.save()
+            url = request.build_absolute_uri(reverse('accounts:login'))
+            send_mail(
+                'Password Reset',
+                f"Your password has been reset for you with new password: 123456. Use this link {url} to login.",
+                settings.DEFAULT_FROM_EMAIL,
+                [user.email],
+                fail_silently=False,
+            )
             return JsonResponse({'message':'success'})
             
         return HttpResponse('Wrong request')
