@@ -30,7 +30,6 @@
                         <th>Receiver</th>  
                         <th>File Name</th>
                         <th>File Type</th>
-                        <th>Status</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -40,20 +39,17 @@
                         <td>{{ file.created_at }}</td>
                         <td>
                             {% for rec in file.file_receivers.all %}
-                                {{ rec }}, <br>
+                                {{ rec }}{% if rec.status == rec.PENDING %}
+                                <span class="badge badge-primary small">PENDING</span>
+                                {% elif rec.status == rec.ACCEPTED %}
+                                <span class="badge badge-success small">ACCEPTED</span>
+                                {% elif rec.status == rec.REJECTED %}
+                                <span class="badge badge-danger small">REJECTED</span>
+                                {% endif %} <br>
                             {% endfor %}
                         </td>  
                         <td>{{ file.name|title }}</td>
                         <td>{{ file.type|upper }}</td>
-                        <td>
-                            {% if file.status == file.PENDING %}
-                            <span class="badge badge-primary">PENDING</span>
-                            {% elif file.status == file.ACCEPTED %}
-                            <span class="badge badge-success">ACCEPTED</span>
-                            {% elif file.status == file.REJECTED %}
-                            <span class="badge badge-danger">REJECTED</span>
-                            {% endif %}
-                        </td>
                         <td class="text-center">
                             <a href="{{ file.file.url }}" class="text-primary mr-3" title="Download {{ file.name|title }}"><i class="fa fa-download"></i></a>
                             <a href="{% url 'files:view_sent_resent' %}" class="text-primary resend" title="Resend {{ file.name|title }} to {{ file.receiver.name|title }}" data-id="{{ file.id }}" data-token="{{ csrf_token }}" data-user="{{ user.id }}" data-status="1"><i class="fa fa-share-square"></i></a>

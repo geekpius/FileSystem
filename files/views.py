@@ -76,7 +76,7 @@ class PendingFileListChangeStatusView(LoginRequiredMixin, View):
     template_name = "users/files/pending_file.html"
 
     def get(self, request, *args, **kwargs):
-        files = FileReciever.objects.filter(receiver=request.user, file__status=File.PENDING)
+        files = FileReciever.objects.filter(receiver=request.user, status=FileReciever.PENDING)
         context = {
             "file_list": files
         }
@@ -86,10 +86,10 @@ class PendingFileListChangeStatusView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             id = request.POST['file_id']
-            file = get_object_or_404(File, pk=id)
+            file = get_object_or_404(FileReciever, pk=id)
             file.status = request.POST['status'] 
             file.save()
-            ArchiveFile.objects.create(user=request.user, file=file, status=file.status)
+            ArchiveFile.objects.create(user=request.user, file=file.file, status=file.status)
             return JsonResponse({"message": "success"})  
         return JsonResponse({"message": "Wrong request"})
 
@@ -100,7 +100,7 @@ class ReceivedFileListView(LoginRequiredMixin, View):
     template_name = "users/files/receive_file.html"
 
     def get(self, request, *args, **kwargs):
-        files = FileReciever.objects.filter(~Q(file__status=File.PENDING), receiver=request.user)
+        files = FileReciever.objects.filter(~Q(status=FileReciever.PENDING), receiver=request.user)
         forwarded = ForwardFile.objects.filter(receiver=request.user)
         zones = Zone.objects.all()
         context = {

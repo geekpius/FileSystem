@@ -104,12 +104,12 @@ class DashboardView(LoginRequiredMixin, View):
             }
         else:
             count_sent_files = File.objects.filter(user=request.user).count(),
-            count_rejected_files = File.objects.filter(user=request.user, status=File.REJECTED).count(),
-            count_pending_files = File.objects.filter(user=request.user, status=File.PENDING).count(),
-            count_accepted_files = File.objects.filter(user=request.user, status=File.ACCEPTED).count(),
+            count_rejected_files = FileReciever.objects.filter(file__user=request.user, status=FileReciever.REJECTED).count(),
+            count_pending_files = FileReciever.objects.filter(file__user=request.user, status=FileReciever.PENDING).count(),
+            count_accepted_files = FileReciever.objects.filter(file__user=request.user, status=FileReciever.ACCEPTED).count(),
             count_forwarded_files = ForwardFile.objects.filter(user=request.user).count(),
             count_archives = ArchiveFile.objects.filter(user=request.user).count()
-            monthly = File.objects.filter(user=request.user, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
+            monthly = FileReciever.objects.filter(file__user=request.user, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
                                             total=Count('pk'))
             context = {
                 'count_sent_files': count_sent_files[0],
@@ -397,7 +397,7 @@ class UserNotificationCount(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            pending_files_count = FileReciever.objects.filter(receiver=request.user, file__status=File.PENDING).count()
+            pending_files_count = FileReciever.objects.filter(receiver=request.user, status=FileReciever.PENDING).count()
             accepted_files_count = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.ACCEPTED, is_read=False).count()
             rejected_files_count = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.REJECTED, is_read=False).count()
             notification_count = pending_files_count+accepted_files_count+rejected_files_count
@@ -418,7 +418,7 @@ class UserNotificationView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             template = loader.get_template(self.template_name)
-            pending_files = FileReciever.objects.filter(receiver=request.user, file__status=File.PENDING)
+            pending_files = FileReciever.objects.filter(receiver=request.user, status=FileReciever.PENDING)
             accepted_files = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.ACCEPTED, is_read=False)
             rejected_files = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.REJECTED, is_read=False)
             context = {
