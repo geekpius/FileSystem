@@ -38,22 +38,14 @@
                     {% for file in file_list %}
                     <tr class="record">
                         <td>{{ file.created_at }}</td>
-                        <td>{{ file.user.name|title }}</td>  
-                        <td>{{ file.name|title }}</td>
-                        <td>{{ file.type|upper }}</td>
-                        <td>
-                            {% if file.status == file.PENDING %}
-                            <span class="badge badge-primary">PENDING</span>
-                            {% elif file.status == file.ACCEPTED %}
-                            <span class="badge badge-success">ACCEPTED</span>
-                            {% elif file.status == file.REJECTED %}
-                            <span class="badge badge-danger">REJECTED</span>
-                            {% endif %}
-                        </td>
+                        <td>{{ file.file.user.name|title }}</td>  
+                        <td>{{ file.file.name|title }}</td>
+                        <td>{{ file.file.type|upper }}</td>
+                        <td><span class="badge badge-primary">PENDING</span></td>
                         <td class="text-center">
-                            <a href="{{ file.file.url }}" class="text-primary mr-3" title="Download {{ file.name|title }}"><i class="fa fa-download"></i></a>
-                            {% if file.status == file.PENDING %}
-                            <a href="#" class=" btnChange" data-id="{{ file.id }}" data-status="{{ file.status }}" title="Change status"><i class="fa fa-edit"></i></a>
+                            <a href="{{ file.file.file.url }}" class="text-primary mr-3" title="Download {{ file.file.name|title }}"><i class="fa fa-download"></i></a>
+                            {% if file.file.status == file.file.PENDING %}
+                            <a href="#" class=" btnChange" data-id="{{ file.file.id }}" data-status="{{ file.file.status }}" title="Change status"><i class="fa fa-edit"></i></a>
                             {% endif %}
                             <!-- <a href="{% url 'accounts:users_delete' user.id %}" class="text-danger btnDelete" title="Delete {{ user.name|title }}"><i class="fa fa-trash"></i></a>                                
                              -->

@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.db import transaction
 
 from files.forms import FileCreateForm, ArchiveCreateForm, ForwardCreateForm
-from files.models import File, ArchiveFile, ForwardFile
+from files.models import File, ArchiveFile, ForwardFile, FileReciever
 from zones.models import Zone, Department
 from accounts.models import User
 
@@ -27,8 +27,11 @@ class FileCreateView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             form = self.form_class(request.POST, request.FILES)
+            receivers = request.POST.getlist('receiver[]')
             if form.is_valid():
-                form.save()
+                file = form.save()
+                for reciever in receivers:
+                    FileReciever.objects.create(file=file, receiver_id=reciever)
                 return JsonResponse({"message": "success"}) 
             return JsonResponse({"message": form.errors})  
         return JsonResponse({"message": "Wrong request"})
@@ -73,7 +76,7 @@ class PendingFileListChangeStatusView(LoginRequiredMixin, View):
     template_name = "users/files/pending_file.html"
 
     def get(self, request, *args, **kwargs):
-        files = File.objects.filter(receiver=request.user, status=File.PENDING)
+        files = FileReciever.objects.filter(receiver=request.user, file__status=File.PENDING)
         context = {
             "file_list": files
         }

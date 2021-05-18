@@ -11,7 +11,6 @@ class File (models.Model):
     type = models.CharField(max_length=20)
     file = models.FileField(upload_to='files')
     status = models.IntegerField(default=1)
-    receiver = models.ForeignKey(User, related_name="receivers", on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -23,6 +22,20 @@ class File (models.Model):
     def __str__(self):
         return self.name
 
+
+class FileReciever (models.Model):
+    file = models.ForeignKey(File, related_name="file_receivers", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name="receivers", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    #Metadata
+    class Meta :
+        db_table = "file_recivers"
+
+    #Methods
+    def __str__(self):
+        return self.receiver.name
 
 
 class ArchiveFile (models.Model):

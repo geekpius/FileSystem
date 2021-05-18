@@ -54,7 +54,7 @@
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
-                        <div class="form-group validate">
+                        <div class="form-group validate fallback">
                             <label>File</label>
                             <input type="file" name="file" class="form-control">
                             <span class="text-danger mySpan"></span>
@@ -79,13 +79,18 @@
                         </div> 
 
                         <div class="form-group validate">
-                            <label>Receiver</label>
-                            <select name="receiver" class="form-control">
+                            <label>Receiver(s)</label>
+                            <!-- <select name="receiver" class="form-control">
+                                <option value="" class="after">--Select--</option>
+                            </select>  -->
+
+                            <select name="receiver[]" multiple="multiple" data-placeholder="Select your receivers" class="form-control form-control-select2-icons" data-fouc>
                                 <option value="" class="after">--Select--</option>
                             </select> 
+
                             <span class="text-danger mySpan"></span>
                         </div> 
-
+                        
                         <div class="form-group">
                             <button type="submit" class="btn bg-primary btn-sm btnSubmit">Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i></button>
                         </div> 
@@ -105,4 +110,21 @@
 
 {% block scripts %}
 <script src="{% static 'assets/js/pages/files/files.js' %}"></script>
+<script src="{% static 'assets/js/plugins/forms/selects/select2.min.js' %}"></script>
+<script>
+    function iconFormat(icon) {
+        var originalOption = icon.element;
+        if (!icon.id) { return icon.text; }
+        var $icon = "<i class='icon-" + $(icon.element).data('icon') + "'></i>" + icon.text;
+
+        return $icon;
+    }
+
+    $('.form-control-select2-icons').select2({
+        templateResult: iconFormat,
+        minimumResultsForSearch: Infinity,
+        templateSelection: iconFormat,
+        escapeMarkup: function(m) { return m; }
+    });
+</script>
 {% endblock scripts %}

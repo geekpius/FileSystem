@@ -5,15 +5,17 @@ $("#formFile").on("submit", function(e){
     var $this = $(this);
     var formData = new FormData(this);
     var valid = true;
-    $('#formFile input, #formFile select').each(function() {
+    $('#formFile input:file, #formFile input:text, #formFile select').each(function() {
         let $this = $(this);
         
         if(!$this.val()) {
+            if($this.attr('name')==undefined){
+                valid = true;
+            }
             valid = false;
             $this.parents('.validate').find('.mySpan').text('The '+$this.attr('name').replace(/[\_]+/g, ' ')+' field is required');
         }
     });
-
     if(valid){
         $("#formFile .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
         $.ajax({
@@ -36,6 +38,8 @@ $("#formFile").on("submit", function(e){
                         },
                     function(){
                         $("#formFile")[0].reset();
+                        $('.select2-selection__rendered').html('<li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="Select your receivers" style="width: 0.75em;"></li>');
+                        $("#formFile select[name='department']").find('.after').nextAll().remove();
                         $("#formFile input[name='name']").focus();
                     });
                 }else{
@@ -43,6 +47,8 @@ $("#formFile").on("submit", function(e){
                         swal('Name', `${resp.message.name}`, 'warning');
                     }else if(resp.message.file){
                         swal('File', `${resp.message.file}`, 'warning');
+                    }else if(resp.message.receiver){
+                        swal('Receivers', `${resp.message.receiver}`, 'warning');
                     }else{
                         swal('Error', `${resp.message}`, 'warning');
                     }
@@ -75,6 +81,7 @@ $("#formFile select[name='zone'], #formForward select[name='zone']").on("change"
         data: data,
         success: function(resp){
             if(resp.message === 'success'){
+                $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
                 let options = '';
                 resp.data.forEach(department => {
                     options+='<option value='+department.name+'>'+department.name +'</option>';
@@ -113,14 +120,15 @@ $("#formFile select[name='department']").on("change", function(e){
         data: data,
         success: function(resp){
             if(resp.message === 'success'){
+                $("#formFile select[name='receiver[]']").find('.after').nextAll().remove();
                 let options = '';
                 resp.data.forEach(receiver => {
-                    options+=`<option value="${receiver.id}">${receiver.name} (${receiver.account_type.toUpperCase()})</option>`;
+                    options+=`<option value="${receiver.id}" data-icon="user">${receiver.name} (${receiver.account_type.toUpperCase()})</option>`;
                 });
-                $("#formFile select[name='receiver']").find('.after').after(options);
+                $("#formFile select[name='receiver[]']").find('.after').after(options);
             }
             else{
-                $("#formFile select[name='receiver']").find('.after').nextAll().remove();
+                $("#formFile select[name='receiver[]']").find('.after').nextAll().remove();
             }
         },
         error: function(resp){
@@ -313,6 +321,7 @@ $("#formForward select[name='department']").on("change", function(e){
         data: data,
         success: function(resp){
             if(resp.message === 'success'){
+                $("#formForward select[name='receiver']").find('.after').nextAll().remove();
                 let options = '';
                 resp.data.forEach(receiver => {
                     options+=`<option value="${receiver.id}">${receiver.name} (${receiver.account_type.toUpperCase()})</option>`;

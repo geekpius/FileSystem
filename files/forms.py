@@ -5,7 +5,7 @@ class FileCreateForm(forms.ModelForm):
 
     class Meta:
         model = File
-        fields = ['user', 'name', 'type', 'file', 'receiver']
+        fields = ['user', 'name', 'type', 'file']
 
 
 class ArchiveCreateForm(forms.ModelForm):
