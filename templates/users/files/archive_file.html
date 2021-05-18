@@ -40,7 +40,7 @@
                     <tr class="record">
                         <td>{{ archive.created_at }}</td>
                         <td>{{ archive.file.user.name|title }}</td>  
-                        <td>{{ archive.file.receiver.name|title }}</td>  
+                        <td>{{ archive.user.name|title }}</td>  
                         <td>{{ archive.file.name|title }}</td>
                         <td>{{ archive.file.type|upper }}</td>
                         <td>
@@ -59,7 +59,7 @@
                         </td>
                     </tr>
                     {% endfor %}
-                    {% for archive in file_list %}
+                    <!-- {% for archive in file_list %}
                     <tr class="record">
                         <td>{{ archive.created_at }}</td>
                         <td>{{ archive.file.user.name|title }}</td>  
@@ -81,7 +81,7 @@
                             <a href="{{ archive.file.file.url }}" class="text-primary mr-2" title="Download {{ archive.file.name|title }}"><i class="fa fa-download"></i></a>
                         </td>
                     </tr>
-                    {% endfor %}
+                    {% endfor %} -->
                 </tbody>
             </table>
         </div>

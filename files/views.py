@@ -138,7 +138,7 @@ class ArchiveFileListView(LoginRequiredMixin, View):
             }
         else:
             # files = ArchiveFile.objects.filter(Q(file__user=request.user) | Q(file__file_receivers__in=[request.user.id]))
-            files = ArchiveFile.objects.filter(Q(file__user=request.user))
+            files = ArchiveFile.objects.filter(Q(user=request.user) | Q(file__user=request.user))
             context = {
                 "file_list": files
             }

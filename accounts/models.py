@@ -100,13 +100,6 @@ class User(AbstractBaseUser):
             return 'Deactivate'
         return 'Activate'
 
-    @property
-    def get_pending_files(self):
-        return self.files.filter(status=1).count()
-
-    @property
-    def get_rejected_files(self):
-        return self.files.filter(status=0).count()
 
 
 class UserImage (models.Model):

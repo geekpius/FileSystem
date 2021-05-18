@@ -328,10 +328,14 @@ class UserDetailUpdateView(LoginRequiredMixin, View):
         user = get_object_or_404(User, pk=id)
         zones = Zone.objects.filter(~Q(name='head'), is_active=True)
         departments = Department.objects.filter(~Q(name='head'), zone=request.user.zone, is_active=True)
+        count_rejected = FileReciever.objects.filter(file__user=user, status=FileReciever.REJECTED).count()
+        count_pending = FileReciever.objects.filter(file__user=user, status=FileReciever.PENDING).count()
         context = {
             'user': user,
             'zone_list': zones,
-            'department_list': departments
+            'department_list': departments,
+            'count_rejected':count_rejected,
+            'count_pending': count_pending
         }
         return render(request, self.template_name, context)
     
