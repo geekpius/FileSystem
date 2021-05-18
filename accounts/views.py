@@ -15,7 +15,7 @@ from accounts.forms import (LoginForm, RegisterUserForm, UserImageForm, Register
                             UserUpdateForm, AdminUpdateForm, AccountTypeForm, ProfileUpdateForm)
 from accounts.models import User, UserImage, AccountType
 from zones.models import Department, Zone
-from files.models import File, ArchiveFile, ForwardFile
+from files.models import File, ArchiveFile, ForwardFile, FileReciever
 from django.db.models import Q, Count
 import os
 from django.core.mail import send_mail, EmailMessage
@@ -397,7 +397,7 @@ class UserNotificationCount(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            pending_files_count = File.objects.filter(receiver=request.user, status=File.PENDING).count()
+            pending_files_count = FileReciever.objects.filter(receiver=request.user, file__status=File.PENDING).count()
             accepted_files_count = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.ACCEPTED, is_read=False).count()
             rejected_files_count = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.REJECTED, is_read=False).count()
             notification_count = pending_files_count+accepted_files_count+rejected_files_count
@@ -418,7 +418,7 @@ class UserNotificationView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
             template = loader.get_template(self.template_name)
-            pending_files = File.objects.filter(receiver=request.user, status=File.PENDING)
+            pending_files = FileReciever.objects.filter(receiver=request.user, file__status=File.PENDING)
             accepted_files = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.ACCEPTED, is_read=False)
             rejected_files = ArchiveFile.objects.filter(file__user=request.user, status=ArchiveFile.REJECTED, is_read=False)
             context = {

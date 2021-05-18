@@ -100,7 +100,7 @@ class ReceivedFileListView(LoginRequiredMixin, View):
     template_name = "users/files/receive_file.html"
 
     def get(self, request, *args, **kwargs):
-        files = File.objects.filter(~Q(status=File.PENDING), receiver=request.user)
+        files = FileReciever.objects.filter(~Q(file__status=File.PENDING), receiver=request.user)
         forwarded = ForwardFile.objects.filter(receiver=request.user)
         zones = Zone.objects.all()
         context = {
@@ -137,7 +137,8 @@ class ArchiveFileListView(LoginRequiredMixin, View):
                 "file_list": files
             }
         else:
-            files = ArchiveFile.objects.filter(Q(file__user=request.user) | Q(file__receiver=request.user))
+            # files = ArchiveFile.objects.filter(Q(file__user=request.user) | Q(file__file_receivers__in=[request.user.id]))
+            files = ArchiveFile.objects.filter(Q(file__user=request.user))
             context = {
                 "file_list": files
             }

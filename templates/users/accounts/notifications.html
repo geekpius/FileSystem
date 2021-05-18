@@ -10,18 +10,18 @@
         {% for pending in pending_notification_list %}
         <li class="media">
             <div class="mr-3 position-relative">
-                <img src="{% static pending.user.user_image.get_user_image %}" width="36" height="36" class="rounded-circle" alt="">
+                <img src="{% static pending.file.user.user_image.get_user_image %}" width="36" height="36" class="rounded-circle" alt="">
             </div>
 
             <div class="media-body">
                 <div class="media-title"> 
                     <a href="{% url 'files:view_pending'  %}">
-                        <span class="font-weight-semibold">{{ pending.user.name|title }} - {{ pending.user.department }}</span>
+                        <span class="font-weight-semibold">{{ pending.file.user.name|title }} - {{ pending.file.user.department }}</span>
                         <span class="text-muted float-right font-size-sm">{{ pending.created_at|date:'F d, Y' }}</span>
                     </a>
                 </div>
 
-                <span class="text-muted">Sent a file ({{ pending.name }}) - <span class="text-primary small">PENDING</span></span>
+                <span class="text-muted">Sent a file ({{ pending.file.name }}) - <span class="text-primary small">PENDING</span></span>
             </div>
         </li>
         {% endfor %}

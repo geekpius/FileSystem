@@ -38,21 +38,19 @@
                     {% for file in file_list %}
                     <tr class="record">
                         <td>{{ file.created_at }}</td>
-                        <td>{{ file.user.name|title }}</td>  
-                        <td>{{ file.name|title }}</td>
-                        <td>{{ file.type|upper }}</td>
+                        <td>{{ file.file.user.name|title }}</td>  
+                        <td>{{ file.file.name|title }}</td>
+                        <td>{{ file.file.type|upper }}</td>
                         <td>
-                            {% if file.status == file.PENDING %}
-                            <span class="badge badge-primary">PENDING</span>
-                            {% elif file.status == file.ACCEPTED %}
+                            {% if file.file.status == file.file.ACCEPTED %}
                             <span class="badge badge-success">ACCEPTED TO ARCHIVE</span>
-                            {% elif file.status == file.REJECTED %}
-                            <span class="badge badge-danger">REJECTED TO SENDER</span>
+                            {% elif file.file.status == file.file.REJECTED %}
+                            <span class="badge badge-danger">REJECTED BY RECEIVER</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <a href="{{ file.file.url }}" class="text-primary mr-3" title="Download {{ file.name|title }}"><i class="fa fa-download"></i></a>
-                            <a href="#" class="text-purple btnForward" data-file="{{ file.id }}" title="Forward {{ file.name|title }}"><i class="fa fa-share"></i></a>
+                            <a href="{{ file.file.file.url }}" class="text-primary mr-3" title="Download {{ file.file.name|title }}"><i class="fa fa-download"></i></a>
+                            <a href="#" class="text-purple btnForward" data-file="{{ file.file.id }}" title="Forward {{ file.file.name|title }}"><i class="fa fa-share"></i></a>
                         </td>
                     </tr>
                     {% endfor %}

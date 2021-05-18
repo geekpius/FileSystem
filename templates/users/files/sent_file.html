@@ -38,7 +38,11 @@
                     {% for file in file_list %}
                     <tr class="record">
                         <td>{{ file.created_at }}</td>
-                        <td>{{ file.receiver.name|title }}</td>  
+                        <td>
+                            {% for rec in file.file_receivers.all %}
+                                {{ rec }}, <br>
+                            {% endfor %}
+                        </td>  
                         <td>{{ file.name|title }}</td>
                         <td>{{ file.type|upper }}</td>
                         <td>

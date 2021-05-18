@@ -65,12 +65,12 @@ function getMessages(){
   });
 }
 
-// getNotificationCount();
-// getNotification();
+getNotificationCount();
+getNotification();
 
-// setInterval(function(){
-//     getNotificationCount();
-//     getNotification();
-//     // getMessages();
-//     processRequest();
-// }, 10000);
+setInterval(function(){
+    getNotificationCount();
+    getNotification();
+    // getMessages();
+    processRequest();
+}, 10000);
