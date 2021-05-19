@@ -336,6 +336,7 @@ class UserDetailUpdateView(LoginRequiredMixin, View):
         count_pending = FileReciever.objects.filter(file__user=user, status=FileReciever.PENDING).count()
         count_accepted = FileReciever.objects.filter(file__user=user, status=FileReciever.ACCEPTED).count()
         count_archives = ArchiveFile.objects.filter(file__user=user).count()
+        count_forward = ForwardFile.objects.filter(user=user).count()
         context = {
             'user': user,
             'zone_list': zones,
@@ -344,6 +345,7 @@ class UserDetailUpdateView(LoginRequiredMixin, View):
             'count_pending': count_pending,
             'count_accepted': count_accepted,
             'count_archives': count_archives,
+            'count_forward': count_forward,
         }
         return render(request, self.template_name, context)
     
