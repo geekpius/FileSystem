@@ -136,8 +136,12 @@ class ArchiveFileListView(LoginRequiredMixin, View):
             context = {
                 "file_list": files
             }
+        elif request.user.account_type == User.ADMIN:
+            files = ArchiveFile.objects.filter(file__user__zone = request.user.zone)
+            context = {
+                "file_list": files
+            }
         else:
-            # files = ArchiveFile.objects.filter(Q(file__user=request.user) | Q(file__file_receivers__in=[request.user.id]))
             files = ArchiveFile.objects.filter(Q(user=request.user) | Q(file__user=request.user))
             context = {
                 "file_list": files
