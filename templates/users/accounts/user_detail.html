@@ -61,7 +61,7 @@
 
                 <!-- Quick stats boxes -->
                 <div class="row">
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
 
                         <!-- Sent File online -->
                         <div class="card bg-teal-400">
@@ -82,28 +82,8 @@
 
                     </div>
 
-                    <div class="col-lg-3">
-
-                        <!-- Current server load -->
-                        <div class="card bg-pink-400">
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <h3 class="font-weight-semibold mb-0">{{ count_rejected }}</h3>
-                                    <div class="list-icons ml-auto">
-                                        <a class="list-icons-item" data-action="reload"></a>
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    Rejected Files
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /current server load -->
-
-                    </div>
-
-                    <div class="col-lg-3">
+                    
+                    <div class="col-lg-2">
 
                         <!-- Today's revenue -->
                         <div class="card bg-blue-400">
@@ -123,13 +103,53 @@
                         <!-- /today's revenue -->
 
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
+
+                        <!-- Current server load -->
+                        <div class="card bg-warning-400">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="font-weight-semibold mb-0">{{ count_accepted }}</h3>
+                                    <div class="list-icons ml-auto">
+                                        <a class="list-icons-item" data-action="reload"></a>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    Accepted Files
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /current server load -->
+
+                    </div>
+                    <div class="col-lg-2">
+
+                        <!-- Current server load -->
+                        <div class="card bg-pink-400">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h3 class="font-weight-semibold mb-0">{{ count_rejected }}</h3>
+                                    <div class="list-icons ml-auto">
+                                        <a class="list-icons-item" data-action="reload"></a>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    Rejected Files
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /current server load -->
+
+                    </div>
+                    <div class="col-lg-2">
 
                         <!-- Today's revenue -->
                         <div class="card bg-purple-400">
                             <div class="card-body">
                                 <div class="d-flex">
-                                    <h3 class="font-weight-semibold mb-0">{{ user.user_archive_files.count }}</h3>
+                                    <h3 class="font-weight-semibold mb-0">{{ count_archives }}</h3>
                                     <div class="list-icons ml-auto">
                                         <a class="list-icons-item" data-action="reload"></a>
                                     </div>

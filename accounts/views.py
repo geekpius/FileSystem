@@ -92,6 +92,8 @@ class DashboardView(LoginRequiredMixin, View):
             count_users = User.objects.filter(zone=request.user.zone).count()
             count_departments = Department.objects.filter(zone=request.user.zone).count()
             count_files = File.objects.filter(user__zone=request.user.zone).count(),
+            count_rejected_files = FileReciever.objects.filter(file__user__zone=request.user.zone, status=FileReciever.REJECTED).count(),
+            count_accepted_files = FileReciever.objects.filter(file__user__zone=request.user.zone, status=FileReciever.ACCEPTED).count(),
             count_archives = ArchiveFile.objects.filter(user__zone=request.user.zone).count()
             monthly = File.objects.filter(user__zone=request.user.zone, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
                                             total=Count('pk'))
@@ -99,6 +101,8 @@ class DashboardView(LoginRequiredMixin, View):
                 'count_users': count_users,
                 'count_departments': count_departments,
                 'count_files': count_files[0],
+                'count_rejected_files': count_rejected_files[0],
+                'count_accepted_files': count_accepted_files[0],
                 'count_archives': count_archives,
                 'monthly': monthly
             }
@@ -330,12 +334,16 @@ class UserDetailUpdateView(LoginRequiredMixin, View):
         departments = Department.objects.filter(~Q(name='head'), zone=request.user.zone, is_active=True)
         count_rejected = FileReciever.objects.filter(file__user=user, status=FileReciever.REJECTED).count()
         count_pending = FileReciever.objects.filter(file__user=user, status=FileReciever.PENDING).count()
+        count_accepted = FileReciever.objects.filter(file__user=user, status=FileReciever.ACCEPTED).count()
+        count_archives = ArchiveFile.objects.filter(file__user=user).count()
         context = {
             'user': user,
             'zone_list': zones,
             'department_list': departments,
             'count_rejected':count_rejected,
-            'count_pending': count_pending
+            'count_pending': count_pending,
+            'count_accepted': count_accepted,
+            'count_archives': count_archives,
         }
         return render(request, self.template_name, context)
     

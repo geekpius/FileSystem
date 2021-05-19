@@ -110,7 +110,7 @@
     <!-- Quick stats boxes -->
     <div class="row">
 
-        <div class="col-lg-3">
+        <div class="col-lg-2">
 
             <!-- Current server load -->
             <div class="card bg-pink-400">
@@ -132,7 +132,7 @@
         </div>
 
 
-        <div class="col-lg-3">
+        <div class="col-lg-2">
 
             <!-- Sent File online -->
             <div class="card bg-teal-400">
@@ -153,7 +153,7 @@
 
         </div>
 
-        <div class="col-lg-3">
+        <div class="col-lg-2">
 
             <div class="card bg-blue-400">
                 <div class="card-body">
@@ -170,7 +170,42 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
+
+            <div class="card bg-warning-400">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h3 class="font-weight-semibold mb-0">{{ count_accepted_files }}</h3>
+                        <div class="list-icons ml-auto">
+                            <a class="list-icons-item" data-action="reload"></a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        Accepted Files
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-2">
+
+            <div class="card bg-danger-400">
+                <div class="card-body">
+                    <div class="d-flex">
+                        <h3 class="font-weight-semibold mb-0">{{ count_rejected_files }}</h3>
+                        <div class="list-icons ml-auto">
+                            <a class="list-icons-item" data-action="reload"></a>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        Rejected Files
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
 
             <!-- Today's revenue -->
             <div class="card bg-purple-400">
