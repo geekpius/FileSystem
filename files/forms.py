@@ -19,4 +19,4 @@ class ForwardCreateForm(forms.ModelForm):
 
     class Meta:
         model = ForwardFile
-        fields = ['file', 'user', 'receiver']
+        fields = ['file', 'user']

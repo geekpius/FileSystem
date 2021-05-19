@@ -60,13 +60,8 @@ class ArchiveFile (models.Model):
 
 
 class ForwardFile (models.Model):
-    PENDING = 1
-    REJECTED = 0
-    ACCEPTED = 2
     file = models.ForeignKey(File, related_name="forward_files", on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="user_forward_files", on_delete=models.CASCADE)
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="receiver_forward_files", on_delete=models.CASCADE)
-    status = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -77,3 +72,23 @@ class ForwardFile (models.Model):
     #Methods
     def __str__(self):
         return self.file
+
+
+class ForwardFileReceiver (models.Model):
+    PENDING = 1
+    REJECTED = 0
+    ACCEPTED = 2
+    forward_file = models.ForeignKey(ForwardFile, related_name="forward_file_receivers", on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name="forward_receivers", on_delete=models.CASCADE)
+    status = models.IntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    #Metadata
+    class Meta :
+        db_table = "forward_file_recivers"
+
+    #Methods
+    def __str__(self):
+        return self.receiver.name
+

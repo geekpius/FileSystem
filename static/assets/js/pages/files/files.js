@@ -321,15 +321,15 @@ $("#formForward select[name='department']").on("change", function(e){
         data: data,
         success: function(resp){
             if(resp.message === 'success'){
-                $("#formForward select[name='receiver']").find('.after').nextAll().remove();
+                $("#formForward select[name='receiver[]']").find('.after').nextAll().remove();
                 let options = '';
                 resp.data.forEach(receiver => {
-                    options+=`<option value="${receiver.id}">${receiver.name} (${receiver.account_type.toUpperCase()})</option>`;
+                    options+=`<option value="${receiver.id}" data-icon="user">${receiver.name} (${receiver.account_type.toUpperCase()})</option>`;
                 });
-                $("#formForward select[name='receiver']").find('.after').after(options);
+                $("#formForward select[name='receiver[]']").find('.after').after(options);
             }
             else{
-                $("#formForward select[name='receiver']").find('.after').nextAll().remove();
+                $("#formForward select[name='receiver[]']").find('.after').nextAll().remove();
             }
         },
         error: function(resp){
@@ -348,10 +348,13 @@ $("#formForward").on("submit", function(e){
     e.preventDefault();
     var $this = $(this);
     var valid = true;
-    $('#formForward input, #formForward select').each(function() {
+    $('#formForward select').each(function() {
         let $this = $(this);
         
         if(!$this.val()) {
+            if($this.attr('name')==undefined){
+                valid = true;
+            }
             valid = false;
             $this.parents('.validate').find('.mySpan').text('The '+$this.attr('name').replace(/[\_]+/g, ' ')+' field is required');
         }
@@ -369,7 +372,7 @@ $("#formForward").on("submit", function(e){
                 if(resp.message==='success'){
                     swal({
                         title: "Success",
-                        text: `Forwarded successful`,
+                        text: resp.report,
                         type: "success",
                         showCancelButton: false,
                         confirmButtonClass: "btn-sm text-primary",
@@ -377,6 +380,8 @@ $("#formForward").on("submit", function(e){
                         },
                     function(){
                         $("#formForward")[0].reset();
+                        $('.select2-selection__rendered').html('<li class="select2-search select2-search--inline"><input class="select2-search__field" type="search" spellcheck="false" role="textbox" aria-autocomplete="list" placeholder="Select your receivers" style="width: 0.75em;"></li>');
+                        $("#formForward select[name='department']").find('.after').nextAll().remove();
                         $("#forwardModal").modal('hide');
                     });
                 }else{
@@ -384,10 +389,6 @@ $("#formForward").on("submit", function(e){
                         swal('Error', `${resp.message.file}`, 'warning');
                     }else if(resp.message.user){
                         swal('Error', `${resp.message.user}`, 'warning');
-                    }else if(resp.message.receiver){
-                        swal('Error', `${resp.message.receiver}`, 'warning');
-                    }else if(resp.message.gender){
-                        swal('Error', `${resp.message.gender}`, 'warning');
                     }else{
                         swal('Error', `${resp.message}`, 'warning');
                     }

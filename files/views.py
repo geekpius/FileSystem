@@ -7,7 +7,7 @@ from django.db.models import Q
 from django.db import transaction
 
 from files.forms import FileCreateForm, ArchiveCreateForm, ForwardCreateForm
-from files.models import File, ArchiveFile, ForwardFile, FileReciever
+from files.models import File, ArchiveFile, ForwardFile, FileReciever, ForwardFileReceiver
 from zones.models import Zone, Department
 from accounts.models import User
 
@@ -101,7 +101,7 @@ class ReceivedFileListView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         files = FileReciever.objects.filter(~Q(status=FileReciever.PENDING), receiver=request.user)
-        forwarded = ForwardFile.objects.filter(receiver=request.user)
+        forwarded = ForwardFileReceiver.objects.filter(receiver=request.user)
         zones = Zone.objects.all()
         context = {
             "file_list": files,
@@ -176,18 +176,27 @@ class ForwardFileView(LoginRequiredMixin, View):
         }
         return render(request, self.template_name, context)
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             form = self.form_class(request.POST)
+            receivers = request.POST.getlist('receiver[]')
             if form.is_valid():
-                form.save(commit=False)
-                file = form.cleaned_data['file']
-                receiver = form.cleaned_data['receiver']
-                if ForwardFile.objects.filter(file=file, receiver=receiver).exists():
-                    return JsonResponse({'message':'File already forwarded to this receiver'})
+                if len(receivers) == 0:
+                    return JsonResponse({'message':'No receivers selected'})
                 else:
-                    form.save()
-                    return JsonResponse({'message':'success'})
+                    file = form.save()
+                    exist = 0
+                    forwarded = 0
+                    for receiver in receivers:
+                        if ForwardFileReceiver.objects.filter(forward_file=file, receiver_id=receiver).exists():
+                            exist += 1
+                        else:
+                            ForwardFileReceiver.objects.create(forward_file=file, receiver_id=receiver)
+                            forwarded += 1
+        
+                    exist_message = '' if exist == 0 else f"Already forwarded to {exist} receiver(s)."
+                    return JsonResponse({'message':'success', 'report':f"File dispatched to {len(receivers)} receiver(s). {forwarded} received. {exist_message}"})
             return JsonResponse({'message': form.errors})
         return HttpResponse('Wrong request')
 
