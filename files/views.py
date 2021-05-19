@@ -29,10 +29,13 @@ class FileCreateView(LoginRequiredMixin, View):
             form = self.form_class(request.POST, request.FILES)
             receivers = request.POST.getlist('receiver[]')
             if form.is_valid():
-                file = form.save()
-                for reciever in receivers:
-                    FileReciever.objects.create(file=file, receiver_id=reciever)
-                return JsonResponse({"message": "success"}) 
+                if len(receivers) == 0:
+                    return JsonResponse({"message": "No receivers selected"}) 
+                else:
+                    file = form.save()
+                    for reciever in receivers:
+                        FileReciever.objects.create(file=file, receiver_id=reciever)
+                    return JsonResponse({"message": "success"}) 
             return JsonResponse({"message": form.errors})  
         return JsonResponse({"message": "Wrong request"})
 
