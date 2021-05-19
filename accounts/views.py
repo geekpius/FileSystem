@@ -108,7 +108,7 @@ class DashboardView(LoginRequiredMixin, View):
             count_pending_files = FileReciever.objects.filter(file__user=request.user, status=FileReciever.PENDING).count(),
             count_accepted_files = FileReciever.objects.filter(file__user=request.user, status=FileReciever.ACCEPTED).count(),
             count_forwarded_files = ForwardFile.objects.filter(user=request.user).count(),
-            count_archives = ArchiveFile.objects.filter(user=request.user).count()
+            count_archives = ArchiveFile.objects.filter(file__user=request.user).count()
             monthly = FileReciever.objects.filter(file__user=request.user, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
                                             total=Count('pk'))
             context = {
