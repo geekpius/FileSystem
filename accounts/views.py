@@ -489,3 +489,32 @@ class ResetPasswordView(LoginRequiredMixin, View):
             
         return HttpResponse('Wrong request')
 
+
+class ProfilePhotoUpdateView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to" 
+    form_class = UserImageForm
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST, request.FILES)
+            if form.is_valid():
+                user_image  = get_object_or_404(UserImage, pk=request.user.id)
+                if user_image.image:
+                    if os.path.exists(user_image.image.path):
+                        os.remove(user_image.image.path)
+                        user_image.image = request.FILES['image']
+                        user_image.save()
+                        return JsonResponse({"message":"success", "img": user_image.image.url})
+                    else:
+                        user_image.image = request.FILES['image']
+                        user_image.save()
+                        return JsonResponse({"message":"success", "img": user_image.image.url})
+                else:
+                    user_image.image = request.FILES['image']
+                    user_image.save()
+                    return JsonResponse({"message":"success", "img": user_image.image.url})
+
+            return JsonResponse({"message": form.errors})  
+            
+        return HttpResponse('Wrong request')

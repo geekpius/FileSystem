@@ -398,3 +398,62 @@ $("#passwordReset").on('change', function(){
         sendRequest($this.data('url'));
     }
 });
+
+$(".btnUploadImage").on("click", function(e) {
+    e.preventDefault();
+    $("#uploadModal").modal('show');
+});
+
+
+$("#formUploadImage").on("submit", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var valid = true;
+    var $this = $(this);
+    var formData = new FormData(this);
+    $('#formUploadImage input').each(function() {
+        let $this = $(this);
+        if(!$this.val()) {
+            valid = false;
+            $this.parents('.validate').find('.mySpan').text('The '+$this.attr('name').replace(/[\_]+/g, ' ')+' field is required');
+        }
+    });
+    if(valid) {
+        $('#formUploadImage .btnUpload').html('<i class="fa fa-spinner fa-spin"></i> Uploading Photo...').attr('disabled', true);
+        $.ajax({
+            url: $this.attr('action'),
+            type: "POST",
+            dataType: 'json',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response.message=='success'){
+                    swal({
+                        title: "Uploaded",
+                        text: "Your profile photo is uploaded successful",
+                        type: "success",
+                        confirmButtonClass: "btn-success btn-sm",
+                        cancelButtonClass: "btn-sm",
+                        confirmButtonText: "Okay",
+                        closeOnConfirm: true
+                        },
+                    function(){
+                        $(".imgPreview").attr('src', response.img)
+                        $("#formUploadImage")[0].reset();
+                        $("#uploadModal").modal('hide');
+                    });
+                }else{
+                    swal('Error', response.message, 'error');
+                }
+                $('#formUploadImage .btnUpload').html('Upload Photo').attr('disabled', false);
+            },
+            error: function(response){
+                console.log('something wrong with request')
+                $('#formUploadImage .btnUpload').html('Upload Photo').attr('disabled', false);
+            }
+        });
+    }
+    return false;
+});

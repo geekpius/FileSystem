@@ -83,14 +83,6 @@ class User(AbstractBaseUser):
         return True
 
     @property
-    def capitalize_account_type(self):
-        return capitalize(self.account_type)
-    
-    @property
-    def capitalize_zone(self):
-        return capitalize(self.zone)
-
-    @property
     def get_random_password(self):
         return get_random_string(length=6)
 

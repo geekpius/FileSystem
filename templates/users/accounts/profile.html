@@ -32,9 +32,9 @@
                 <div class="card">
                     <div class="card-body bg-indigo-400 text-center card-img-top" style="background-image: url({% static 'assets/images/backgrounds/panel_bg.png' %}); background-size: contain;">
                         <div class="card-img-actions d-inline-block mb-3">
-                            <img class="img-fluid rounded-circle" src="{% static request.user.user_image.get_user_image %}" width="170" height="170" alt="">
+                            <img class="img-fluid rounded-circle imgPreview" src="{% static request.user.user_image.get_user_image %}" width="170" height="170" alt="">
                             <div class="card-img-actions-overlay rounded-circle">
-                                <a href="#" class="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
+                                <a href="#" class="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round btnUploadImage">
                                     <i class="icon-plus3"></i>
                                 </a>
                             </div>
@@ -129,6 +129,35 @@
 
     </div>
     <!-- /inner container -->
+
+    <!-- Basic modal -->
+    <div id="uploadModal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+               <form action="{% url 'accounts:update_image' %}" id="formUploadImage" enctype="multipart/form-data">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="form-group validate">
+                        <label>Profile Photo</label>
+                        <input type="file" name="image" class="form-control">
+                        <span class="text-danger mySpan"></span>
+                    </div> 
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link text-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn bg-primary btn-sm btnUpload">Upload Photo</button>
+                </div>
+               </form>
+            </div>
+        </div>
+    </div>
+    <!-- /basic modal -->
 
 </div>
 <!-- /content area -->
