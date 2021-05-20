@@ -79,8 +79,8 @@ class DashboardView(LoginRequiredMixin, View):
             count_users = User.objects.count()
             count_files = File.objects.count(),
             count_archives = ArchiveFile.objects.count()
-            monthly = File.objects.filter(created_at__year = str(cur_year)).values_list('created_at__month').annotate(
-                                            total=Count('pk'))
+            monthly = File.objects.extra({'month':'EXTRACT(MONTH from created_at)'}, where=['YEAR(created_at)=%s'], 
+            params=[str(cur_year)]).values('month').annotate(total=Count('*')).values('month', 'total')
             context = {
                 'count_zones': count_zones,
                 'count_users': count_users,
@@ -95,8 +95,11 @@ class DashboardView(LoginRequiredMixin, View):
             count_rejected_files = FileReciever.objects.filter(file__user__zone=request.user.zone, status=FileReciever.REJECTED).count(),
             count_accepted_files = FileReciever.objects.filter(file__user__zone=request.user.zone, status=FileReciever.ACCEPTED).count(),
             count_archives = ArchiveFile.objects.filter(user__zone=request.user.zone).count()
-            monthly = File.objects.filter(user__zone=request.user.zone, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
-                                            total=Count('pk'))
+            # monthly = File.objects.filter(user__zone=request.user.zone, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
+            #                                 total=Count('pk'))
+            monthly = File.objects.extra({'month':'EXTRACT(MONTH from created_at)'}, where=['YEAR(created_at)=%s'], 
+            params=[str(cur_year)]).values('month').annotate(total=Count('*')).values('month', 'total')
+
             context = {
                 'count_users': count_users,
                 'count_departments': count_departments,
@@ -113,8 +116,8 @@ class DashboardView(LoginRequiredMixin, View):
             count_accepted_files = FileReciever.objects.filter(file__user=request.user, status=FileReciever.ACCEPTED).count(),
             count_forwarded_files = ForwardFile.objects.filter(user=request.user).count(),
             count_archives = ArchiveFile.objects.filter(file__user=request.user).count()
-            monthly = FileReciever.objects.filter(file__user=request.user, created_at__year = str(cur_year)).values_list('created_at__month').annotate(
-                                            total=Count('pk'))
+            monthly = File.objects.extra({'month':'EXTRACT(MONTH from created_at)'}, where=['user_id=%s', 'YEAR(created_at)=%s'], 
+            params=[request.user.id, str(cur_year)]).values('month').annotate(total=Count('*')).values('month', 'total')
             context = {
                 'count_sent_files': count_sent_files[0],
                 'count_rejected_files': count_rejected_files[0],

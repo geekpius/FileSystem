@@ -21,7 +21,7 @@
 
 
     <!-- Quick stats boxes -->
-    {% if user.account_type == 'super' %}
+    {% if request.user.account_type == 'super' %}
     <!-- Quick stats boxes -->
     <div class="row">
         <div class="col-lg-3">
@@ -106,7 +106,7 @@
     </div>
     <!-- /quick stats boxes -->
 
-    {% elif user.account_type == 'admin' %}
+    {% elif request.user.account_type == 'admin' %}
     <!-- Quick stats boxes -->
     <div class="row">
 
@@ -362,7 +362,7 @@
         <div class="col-xl-12">
             <div class="card">
                 <div class="card-header header-elements-inline">
-                    <h5 class="card-title">{% now "Y" %} Files Chart </h5>
+                    <h5 class="card-title">{% now "Y" %} Files Chart {% if request.user.account_type == 'super' %}For The Organization{% elif request.user.account_type == 'admin' %}{{ request.user.zone|title }} Zone{% endif %} </h5>
                     <div class="header-elements">
                         <div class="list-icons">
                             <a class="list-icons-item" data-action="collapse"></a>
@@ -440,10 +440,9 @@
                 // Data
                 var data = google.visualization.arrayToDataTable([
                     ['Months', 'Files'],
-                    {% for field, value in monthly %}
-                    [listMonths[{{field}}], {{ value }}],
+                    {% for field in monthly %}
+                    [listMonths[{{ field.month }}], {{ field.total }}],
                     {% endfor %}
-                    
                 ]);
     
     

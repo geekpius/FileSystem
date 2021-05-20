@@ -404,6 +404,43 @@ $("#formForward").on("submit", function(e){
     return false;
 });
 
+function checkFileType(){
+    var size = document.getElementById('upfile').files[0].size;
+    var fileSize = Math.round((size / 1024)); 
+    var selectedFile = document.getElementById('upfile').files[0].name;
+    var ext = selectedFile.replace(/^.*\./, '');
+    ext= ext.toLowerCase();
+    var selectExtension = $("#formFile select[name='type']").val();
+    if(fileSize>10240){
+        alert('File size should be less than 10MB');
+        document.getElementById("upfile").value = null;
+    }else if(ext!=selectExtension){
+        if(selectExtension == ''){
+            alert('Select file type to proceed');
+            document.getElementById("upfile").value = null;
+        }else{
+            if(selectExtension == 'image'){
+                if(ext!='jpg' && ext!='jpeg'){
+                    alert('File does not qualify the choose file type');
+                    document.getElementById("upfile").value = null;
+                }
+            }else{
+                alert('File does not qualify the choose file type');
+                document.getElementById("upfile").value = null;
+            }
+        }
+    }
+}
+
+$("#formFile input[name='file']").on('change', function(){
+    checkFileType();
+});
+
+$("#formFile select[name='type']").on('change', function(){
+    if(document.getElementById("upfile").value != ''){
+        checkFileType();
+    }
+});
 
 $("#formFile input, #formChange input").on('input', function(){
     if($(this).val()!=''){
