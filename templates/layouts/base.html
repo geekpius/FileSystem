@@ -125,7 +125,7 @@
 
 				<li class="nav-item dropdown dropdown-user">
 					<a href="#" class="navbar-nav-link d-flex align-items-center dropdown-toggle" data-toggle="dropdown">
-						<img src="{% static request.user.user_image.get_user_image %}" class="rounded-circle mr-2 imgPreview" height="34" alt="">
+						<img src="{% if request.user.user_image.image %} {{ request.user.user_image.image.url }} {% else %} {% static 'assets/images/user.svg' %} {% endif %}" class="rounded-circle mr-2 imgPreview" height="34" alt="{{ request.name }}">
 						<span>{{ request.user.name }}</span>
 					</a>
 					
@@ -171,7 +171,7 @@
 					<div class="card-body">
 						<div class="media">
 							<div class="mr-3">
-								<a href="#"><img src="{% static request.user.user_image.get_user_image %}" width="38" height="38" class="rounded-circle imgPreview" alt=""></a>
+								<a href="#"><img src="{% if request.user.user_image.image %} {{ request.user.user_image.image.url }} {% else %} {% static 'assets/images/user.svg' %} {% endif %}" width="38" height="38" class="rounded-circle imgPreview" alt="{{ request.user.name }}"></a>
 							</div>
 
 							<div class="media-body">

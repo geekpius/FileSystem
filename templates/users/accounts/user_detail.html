@@ -32,7 +32,7 @@
                 <div class="card">
                     <div class="card-body bg-indigo-400 text-center card-img-top" style="background-image: url({% static 'assets/images/backgrounds/panel_bg.png' %}); background-size: contain;">
                         <div class="card-img-actions d-inline-block mb-3">
-                            <img class="img-fluid rounded-circle" src="{% static user.user_image.get_user_image %}" width="170" height="170" alt="">
+                            <img class="img-fluid rounded-circle" src="{% if user.user_image.image %} {{ user.user_image.image.url }} {% else %} {% static 'assets/images/user.svg' %} {% endif %}" width="170" height="170" alt="{{ user.name }}">
                             
                         </div>
 
