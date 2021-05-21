@@ -1,0 +1,82 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Old file{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<!-- Page header -->
+<div class="page-header page-header-light">
+    <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+            <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Old Files</span> - Add New</h4>
+        </div>
+    </div>
+</div>
+<!-- /page header -->
+
+
+<!-- Content area -->
+<div class="content">
+
+    <!-- Main charts -->
+    <div class="row">
+        <div class="col-sm-12 col-lg-6 offset-lg-3">
+
+            <!-- Traffic sources -->
+            <div class="card">
+                <div class="card-header header-elements-inline">
+                    <h6 class="card-title">Save Old File</h6>
+                    <div class="header-elements"></div>
+                </div>
+
+                <div class="card-body py-0">
+                    <form action="{% url 'files:old_files' %}" id="formOldFile" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="user" value="{{ user.id }}" readonly>
+                        <div class="form-group validate">
+                            <label>File Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="Enter file name">
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+
+                        <div class="form-group validate">
+                            <label>File Type</label>
+                            <select name="type" class="form-control">
+                                <option value="">--Select--</option>
+                                <option value="docx">Word</option>
+                                <option value="pdf">PDF</option>
+                                <option value="xlsx">Excel</option>
+                                <option value="csv">CSV</option>
+                                <option value="zip">ZIP Files</option>
+                                <option value="rar">RAR Files</option>
+                                <option value="image">Image(jpg, jpeg)</option>
+                            </select> 
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        <div class="form-group validate">
+                            <label>File (<i class="text-danger" style="font-size: 10px;">10MB max file size</i>)</label>
+                            <input type="file" name="file" id="upfile" class="form-control">
+                            <span class="text-danger mySpan"></span>
+                        </div> 
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn bg-primary btn-sm btnSubmit">Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i></button>
+                        </div> 
+                    </form>
+                </div>
+
+            </div>
+            <!-- /traffic sources -->
+
+        </div>
+    </div>
+    <!-- /main charts -->
+
+</div>
+<!-- /content area -->
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'assets/js/pages/files/files.js' %}"></script>
+{% endblock scripts %}

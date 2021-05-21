@@ -92,3 +92,21 @@ class ForwardFileReceiver (models.Model):
     def __str__(self):
         return self.receiver.name
 
+
+
+class OldFile (models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="old_files", on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, unique=True)
+    type = models.CharField(max_length=20)
+    file = models.FileField(upload_to='oldfiles')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    #Metadata
+    class Meta :
+        db_table = "old_files"
+
+    #Methods
+    def __str__(self):
+        return self.name
+

@@ -6,8 +6,8 @@ from django.template import loader
 from django.db.models import Q
 from django.db import transaction
 
-from files.forms import FileCreateForm, ArchiveCreateForm, ForwardCreateForm
-from files.models import File, ArchiveFile, ForwardFile, FileReciever, ForwardFileReceiver
+from files.forms import FileCreateForm, ArchiveCreateForm, ForwardCreateForm, OldFileCreateForm
+from files.models import File, ArchiveFile, ForwardFile, FileReciever, ForwardFileReceiver, OldFile
 from zones.models import Zone, Department
 from accounts.models import User
 
@@ -37,7 +37,7 @@ class FileCreateView(LoginRequiredMixin, View):
                         FileReciever.objects.create(file=file, receiver_id=reciever)
                     return JsonResponse({"message": "success"}) 
             return JsonResponse({"message": form.errors})  
-        return JsonResponse({"message": "Wrong request"})
+        return HttpResponse("Wrong request")
 
 
 class DepartmentGetView(LoginRequiredMixin, View):
@@ -203,3 +203,42 @@ class ForwardFileView(LoginRequiredMixin, View):
             return JsonResponse({'message': form.errors})
         return HttpResponse('Wrong request')
 
+
+class OldFileCreateView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    form_class = OldFileCreateForm
+    template_name = "users/files/old_file.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, {})
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({"message": "success"}) 
+            return JsonResponse({"message": form.errors})  
+        return HttpResponse("Wrong request")
+
+
+class OldFileView(LoginRequiredMixin, View):
+    login_url = "accounts:login"
+    redirect_field_name = "redirect_to"
+    template_name = "users/files/view_old_files.html"
+
+    def get(self, request, *args, **kwargs):
+        files = OldFile.objects.all()
+        context = {
+            'file_list': files
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            id = request.POST['file']
+            file = get_object_or_404(OldFile, pk=id)
+            file.delete()
+            return JsonResponse({"message": "success"}) 
+        return HttpResponse("Wrong request")

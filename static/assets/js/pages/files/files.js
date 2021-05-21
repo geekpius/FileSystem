@@ -404,13 +404,13 @@ $("#formForward").on("submit", function(e){
     return false;
 });
 
-function checkFileType(){
+function checkFileType(type){
     var size = document.getElementById('upfile').files[0].size;
     var fileSize = Math.round((size / 1024)); 
     var selectedFile = document.getElementById('upfile').files[0].name;
     var ext = selectedFile.replace(/^.*\./, '');
     ext= ext.toLowerCase();
-    var selectExtension = $("#formFile select[name='type']").val();
+    var selectExtension = $("select[name='type']").val();
     if(fileSize>10240){
         alert('File size should be less than 10MB');
         document.getElementById("upfile").value = null;
@@ -432,27 +432,87 @@ function checkFileType(){
     }
 }
 
-$("#formFile input[name='file']").on('change', function(){
+$("#formFile input[name='file'], #formOldFile input[name='file']").on('change', function(){
     checkFileType();
 });
 
-$("#formFile select[name='type']").on('change', function(){
+$("#formFile select[name='type'], #formOldFile select[name='type']").on('change', function(){
     if(document.getElementById("upfile").value != ''){
         checkFileType();
     }
 });
 
-$("#formFile input, #formChange input").on('input', function(){
+$("#formFile input, #formChange input, #formOldFile input").on('input', function(){
     if($(this).val()!=''){
         $(this).parents('.validate').find('.mySpan').text('');
     }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
 });
 
-$("#formFile select, #formChange select, #formForward select").on('change', function(){
+$("#formFile select, #formChange select, #formForward select, #formOldFile select").on('change', function(){
     if($(this).val()!=''){
         $(this).parents('.validate').find('.mySpan').text('');
     }else{ $(this).parents('.validate').find('.mySpan').text('The '+$(this).attr('name').replace(/[\_]+/g, ' ')+' field is required'); }
 });
+
+
+$("#formOldFile").on("submit", function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    var $this = $(this);
+    var formData = new FormData(this);
+    var valid = true;
+    $('#formOldFile input, #formOldFile select').each(function() {
+        let $this = $(this);
+        
+        if(!$this.val()) {
+            valid = false;
+            $this.parents('.validate').find('.mySpan').text('The '+$this.attr('name').replace(/[\_]+/g, ' ')+' field is required');
+        }
+    });
+    if(valid){
+        $("#formOldFile .btnSubmit").html('<i class="fa fa-spin fa-spinner"></i> Submitting...').attr('disabled',true);
+        $.ajax({
+            url: $("#formOldFile").attr("action"),
+            type: "POST",
+            dateType: "json",
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(resp){
+                if(resp.message==='success'){
+                    swal({
+                        title: "Success",
+                        text: `File is saved successful`,
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonClass: "btn-sm text-primary",
+                        confirmButtonText: "Okay",
+                        },
+                    function(){
+                        $("#formOldFile")[0].reset();
+                        $("#formOldFile input[name='name']").focus();
+                    });
+                }else{
+                    if(resp.message.name){
+                        swal('Name', `${resp.message.name}`, 'warning');
+                    }else if(resp.message.file){
+                        swal('File', `${resp.message.file}`, 'warning');
+                    }else{
+                        swal('Error', `${resp.message}`, 'warning');
+                    }
+                }
+                $("#formOldFile .btnSubmit").html('Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i>').attr('disabled',false);
+            },
+            error: function(resp){
+                console.log('something wrong with request')
+                $("#formOldFile .btnSubmit").html('Submit <i class="fa fa-dot-circle font-size-sm ml-2"></i>').attr('disabled',false);
+            }
+        });
+    }
+    return false;
+});
+
 
 function isNumber(evt) {
     evt = (evt) ? evt : window.event;
