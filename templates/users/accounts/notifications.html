@@ -10,7 +10,7 @@
         {% for pending in pending_notification_list %}
         <li class="media">
             <div class="mr-3 position-relative">
-                <img src="{% static pending.file.user.user_image.get_user_image %}" width="36" height="36" class="rounded-circle" alt="">
+                <img src="{% if pending.file.user.user_image.image %} {{ pending.file.user.user_image.image.url }} {% else %} {% static 'assets/images/user.svg' %} {% endif %}" width="36" height="36" class="rounded-circle" alt="">
             </div>
 
             <div class="media-body">
@@ -28,7 +28,7 @@
         {% for accepted in accepted_notification_list %}
         <li class="media">
             <div class="mr-3 position-relative">
-                <img src="{% static accepted.user.user_image.get_user_image %}" width="36" height="36" class="rounded-circle" alt="">
+                <img src="{% if accepted.user.user_image.image %} {{ accepted.user.user_image.image.url }} {% else %} {% static 'assets/images/user.svg' %} {% endif %}" width="36" height="36" class="rounded-circle" alt="">
             </div>
 
             <div class="media-body">
@@ -47,7 +47,7 @@
         {% for rejected in rejected_notification_list %}
         <li class="media">
             <div class="mr-3 position-relative">
-                <img src="{% static rejected.user.user_image.get_user_image %}" width="36" height="36" class="rounded-circle" alt="">
+                <img src="{% if rejected.user.user_image.image %} {{ rejected.user.user_image.image.url }} {% else %} {% static 'assets/images/user.svg' %} {% endif %}" width="36" height="36" class="rounded-circle" alt="">
             </div>
 
             <div class="media-body">
