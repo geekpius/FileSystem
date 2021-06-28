@@ -5,7 +5,7 @@ class FileCreateForm(forms.ModelForm):
 
     class Meta:
         model = File
-        fields = ['user', 'name', 'type', 'file']
+        fields = ['user', 'name', 'file']
 
 
 class ArchiveCreateForm(forms.ModelForm):
@@ -26,4 +26,4 @@ class OldFileCreateForm(forms.ModelForm):
 
     class Meta:
         model = OldFile
-        fields = ['user', 'name', 'type', 'file']
+        fields = ['user', 'name', 'file']

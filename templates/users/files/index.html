@@ -40,7 +40,7 @@
                             <span class="text-danger mySpan"></span>
                         </div> 
 
-                        <div class="form-group validate">
+                        <!-- <div class="form-group validate">
                             <label>File Type</label>
                             <select name="type" class="form-control">
                                 <option value="">--Select--</option>
@@ -53,16 +53,16 @@
                                 <option value="image">Image(jpg, jpeg)</option>
                             </select> 
                             <span class="text-danger mySpan"></span>
-                        </div> 
+                        </div>  -->
                         <div class="form-group validate">
-                            <label>File (<i class="text-danger" style="font-size: 10px;">10MB max file size</i>)</label>
+                            <label>File (<i class="text-danger" style="font-size: 10px;">500MB max file size</i>)</label>
                             <input type="file" name="file" id="upfile" class="form-control">
                             <span class="text-danger mySpan"></span>
                         </div> 
                         
                         <div class="form-group validate">
                             <label>Zone</label>
-                            <select name="zone" class="form-control" data-url="{% url 'files:department_get' %}" data-token="{{ csrf_token }}">
+                            <select name="zone" class="form-control" data-url="{% url 'files:department_get' %}" data-token="{{ csrf_token }}" data-type="{{ user.account_type }}"  data-surl="{% url 'files:receiver_get' %}">
                                 <option value="">--Select--</option>
                                 {% for zone in zone_list %}
                                 <option value="{{ zone.name }}">{{ zone.name|title }}</option>
@@ -70,6 +70,8 @@
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
+                       
+                        {% if user.account_type != user.SUPER %}
                         <div class="form-group validate">
                             <label>Department</label>
                             <select name="department" class="form-control" data-url="{% url 'files:receiver_get' %}" data-token="{{ csrf_token }}">
@@ -77,13 +79,10 @@
                             </select> 
                             <span class="text-danger mySpan"></span>
                         </div> 
+                        {% endif %}
 
                         <div class="form-group validate">
                             <label>Receiver(s)</label>
-                            <!-- <select name="receiver" class="form-control">
-                                <option value="" class="after">--Select--</option>
-                            </select>  -->
-
                             <select name="receiver[]" multiple="multiple" data-placeholder="Select your receivers" class="form-control form-control-select2-icons" data-fouc>
                                 <option value="" class="after">--Select--</option>
                             </select> 

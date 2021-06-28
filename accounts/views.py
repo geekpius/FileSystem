@@ -42,12 +42,9 @@ class LoginView(View):
             user = authenticate(email=email, password=password)
 
             if user.is_active:
-                if user.is_admin or user.is_superuser:
-                    messages.error(request, 'You are not authourized.')
-                else:
-                    login(request, user)
-                    redirect_url = self.request.GET.get('redirect_to', 'accounts:dashboard')
-                    return redirect(redirect_url)
+                login(request, user)
+                redirect_url = self.request.GET.get('redirect_to', 'accounts:dashboard')
+                return redirect(redirect_url)
             else:
                 messages.error(request, 'Your account is not activated.')
 

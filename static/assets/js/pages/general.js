@@ -1,25 +1,4 @@
 
- function processRequest() {
-    $.ajax({
-        url: window.location.href,
-        type: "GET",
-        success: function(resp, textStatus, jqXHR){
-            if(jqXHR.status == 200){
-                $(".onlineOffline").addClass('bg-success');
-                $(".onlineOffline").text('Online');
-            }else{
-                $(".onlineOffline").removeClass('bg-success');
-                $(".onlineOffline").text('Offline');
-            }
-        },
-        error: function(resp){
-            console.log('something wrong with request')
-            $(".onlineOffline").removeClass('bg-success');
-            $(".onlineOffline").text('Offline');
-        }
-    });
-}
-
 function getNotificationCount(){
     $.ajax({
        url: $('.notificationCount').data('url'),
@@ -72,5 +51,4 @@ setInterval(function(){
     getNotificationCount();
     getNotification();
     // getMessages();
-    processRequest();
 }, 10000);

@@ -249,7 +249,7 @@
                                         <span class="text-danger mySpan"></span>
                                     </div>
                                     <input type="hidden" readonly name="account_type" value="{{ user.account_type }}" >
-                                    {% if request.user.account_type == 'admin' %}
+                                    {% if user.account_type != user.ADMIN %}
                                     <div class="col-md-6 validate">
                                         <label>Department</label>
                                         <select name="department" class="form-control" data-selected="{{ user.department }}">

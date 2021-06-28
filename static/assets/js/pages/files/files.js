@@ -69,35 +69,71 @@ $("#formFile select[name='zone'], #formForward select[name='zone']").on("change"
     e.stopPropagation();
     e.preventDefault();
     var $this = $(this);
+    var role = $this.data('type');
     if($this.val() != ''){
+        if(role == 'super'){
+            let data = {
+                csrfmiddlewaretoken: $this.data('token'),
+                zone: $this.val(),
+                department: ''
+            }
+            $.ajax({
+                url: $this.data('surl'),
+                type: "POST",
+                dateType: "json",
+                data: data,
+                success: function(resp){
+                    if(resp.message === 'success'){
+                        $("#formFile select[name='receiver[]']").find('.after').nextAll().remove();
+                        let options = '';
+                        resp.data.forEach(receiver => {
+                            let zone = receiver.account_type === 'admin' ? receiver.zone : "";
+                            options+=`<option value="${receiver.id}" data-icon="user">${receiver.name} (${receiver.account_type.toUpperCase()} - ${zone})</option>`;
+                        });
+                        $("#formFile select[name='receiver[]']").find('.after').after(options);
+                    }
+                    else{
+                        $("#formFile select[name='receiver[]']").find('.after').nextAll().remove();
+                    }
+                },
+                error: function(resp){
+                    console.log('something wrong with request')
+                }
+            });
+       }else{
         let data = {
             csrfmiddlewaretoken: $this.data('token'),
             zone: $this.val()
         }
         $.ajax({
-        url: $this.data('url'),
-        type: "POST",
-        dateType: "json",
-        data: data,
-        success: function(resp){
-            if(resp.message === 'success'){
-                $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
-                let options = '';
-                resp.data.forEach(department => {
-                    options+='<option value='+department.name+'>'+department.name +'</option>';
-                });
-                $("#formFile select[name='department'], #formForward select[name='department']").find('.after').after(options);
-            }
-            else{
-                $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
-            }
-        },
-        error: function(resp){
-            console.log('something wrong with request')
-        }
-    });
+                url: $this.data('url'),
+                type: "POST",
+                dateType: "json",
+                data: data,
+                success: function(resp){
+                    if(resp.message === 'success'){
+                        $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
+                        let options = '';
+                        resp.data.forEach(department => {
+                            options+='<option value='+department.name+'>'+department.name +'</option>';
+                        });
+                        $("#formFile select[name='department'], #formForward select[name='department']").find('.after').after(options);
+                    }
+                    else{
+                        $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
+                    }
+                },
+                error: function(resp){
+                    console.log('something wrong with request')
+                }
+            });
+       }
     }else{
-        $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
+        if(role == 'super'){
+            $("#formFile select[name='receiver']").find('.after').nextAll().remove();
+        }else{
+            $("#formFile select[name='department'], #formForward select[name='department']").find('.after').nextAll().remove();
+        }
     }
     return false;
 });
@@ -111,7 +147,7 @@ $("#formFile select[name='department']").on("change", function(e){
         let data = {
             csrfmiddlewaretoken: $this.data('token'),
             zone: $("#formFile select[name='zone']").val(),
-            department: $this.val()
+            department: $this.val(),
         }
         $.ajax({
         url: $this.data('url'),
@@ -123,7 +159,9 @@ $("#formFile select[name='department']").on("change", function(e){
                 $("#formFile select[name='receiver[]']").find('.after').nextAll().remove();
                 let options = '';
                 resp.data.forEach(receiver => {
-                    options+=`<option value="${receiver.id}" data-icon="user">${receiver.name} (${receiver.account_type.toUpperCase()})</option>`;
+                    let zone = (receiver.account_type === 'super' || receiver.account_type === 'admin') ? ' - '+receiver.zone+' Office' : "";
+                    let type = (receiver.account_type === 'super') ? "Head Admin" : receiver.account_type;
+                    options+=`<option value="${receiver.id}" data-icon="user">${receiver.name} (${type.toUpperCase()}${zone.toUpperCase()})</option>`;
                 });
                 $("#formFile select[name='receiver[]']").find('.after').after(options);
             }
@@ -404,31 +442,12 @@ $("#formForward").on("submit", function(e){
     return false;
 });
 
-function checkFileType(type){
+function checkFileType(){
     var size = document.getElementById('upfile').files[0].size;
     var fileSize = Math.round((size / 1024)); 
-    var selectedFile = document.getElementById('upfile').files[0].name;
-    var ext = selectedFile.replace(/^.*\./, '');
-    ext= ext.toLowerCase();
-    var selectExtension = $("select[name='type']").val();
-    if(fileSize>10240){
-        alert('File size should be less than 10MB');
+    if(fileSize>512000){
+        alert('File size should be less than 500MB');
         document.getElementById("upfile").value = null;
-    }else if(ext!=selectExtension){
-        if(selectExtension == ''){
-            alert('Select file type to proceed');
-            document.getElementById("upfile").value = null;
-        }else{
-            if(selectExtension == 'image'){
-                if(ext!='jpg' && ext!='jpeg'){
-                    alert('File does not qualify the choose file type');
-                    document.getElementById("upfile").value = null;
-                }
-            }else{
-                alert('File does not qualify the choose file type');
-                document.getElementById("upfile").value = null;
-            }
-        }
     }
 }
 
@@ -436,11 +455,6 @@ $("#formFile input[name='file'], #formOldFile input[name='file']").on('change', 
     checkFileType();
 });
 
-$("#formFile select[name='type'], #formOldFile select[name='type']").on('change', function(){
-    if(document.getElementById("upfile").value != ''){
-        checkFileType();
-    }
-});
 
 $("#formFile input, #formChange input, #formOldFile input").on('input', function(){
     if($(this).val()!=''){

@@ -25,7 +25,7 @@ $("#formAccountType").on("submit", function(e){
                 if(resp.message==='success'){
                     swal({
                         title: "Success",
-                        text: `Account type is created successful`,
+                        text: `Role is created successful`,
                         type: "success",
                         showCancelButton: false,
                         confirmButtonClass: "btn-sm text-primary",
@@ -97,7 +97,7 @@ $(".datatable-basic tbody tr").on('click', '.btnDeactivate', function(e){
     let color = $this.data('status').toLowerCase() == 'activate'? 'text-success':'text-danger';
     swal({
         title: `Sure to ${$this.data('status').toLowerCase()}?`,
-        text: `You are about deactivate ${$this.parents('.record').find('td').eq(1).text()} zone`,
+        text: `You are about deactivate ${$this.parents('.record').find('td').eq(1).text()}`,
         type: "warning",
         showCancelButton: true,
         confirmButtonClass: `btn-sm ${color}`,

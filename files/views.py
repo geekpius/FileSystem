@@ -64,7 +64,13 @@ class ReceiverGetView(LoginRequiredMixin, View):
         if request.is_ajax():
             zone = request.POST['zone']
             department = request.POST['department']
-            receivers = User.objects.filter(~Q(id=request.user.id), Q(department=department) | Q(department__isnull=True), zone=zone,).values('id', 'name', 'account_type')
+            if department == '':
+                receivers = User.objects.filter(~Q(id=request.user.id), zone=zone,).values('id', 'name', 'account_type', 'zone')
+            else:
+                if request.user.account_type == User.ADMIN:
+                    receivers = User.objects.filter(~Q(id=request.user.id), Q(department=department) | Q(department__isnull=True), Q(zone=User.ZONE_HEAD) | Q(zone=zone)).values('id', 'name', 'account_type', 'zone')
+                else:
+                    receivers = User.objects.filter(~Q(id=request.user.id), Q(department=department) | Q(department__isnull=True), zone=zone,).values('id', 'name', 'account_type', 'zone')
             data = {
                 'message': 'success',
                 'data': list(receivers)
